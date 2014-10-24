@@ -4,10 +4,10 @@
 baseurl: /harmony
 
 # Site live URL
-url: http://gayan.me
+#url: http://gayan.me
 
 # Localhost 
-# url: http://127.0.0.1:4000  
+url: http://127.0.0.1:4000  
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
@@ -37,7 +37,7 @@ harmony:
 
 # Conversion / Build settings 
 markdown:    kramdown
-highlighter: pygments # this is how you put pygments config in jekyll 2.0 instead of pygments: true
+highlighter: null
 
 # Permalinks
 permalink:        pretty
