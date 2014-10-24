@@ -1,7 +1,7 @@
 # Harmony Jekyll theme general configurations 
 
 # Base URL
-baseurl: /harmony
+baseurl: 
 
 # Site live URL
 #url: http://gayan.me
@@ -11,29 +11,30 @@ url: http://127.0.0.1:4000
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
-  name: Harmony
+  name: xabikos
   # Little description about your site
   description: Harmony is free responsive jekyll theme.
   meta_description: Harmony is free responsive jekyll theme. This will appear in your document head meta (for Google search results) and in your feed.xml site description.
   basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
   author: # Author details
-    name: Gayan Virajith
-    email: gayanvirajith@gmail.com
-    url: http://gayanvirajith.github.io
+    name: Charalampos Karypidis
+    email: xaralaboskaripidis@gmail.com
+    url: http://xabikos.com
 
   # Google Analytics key, leave blank to ignore
-  google_analytics_key: UA-xxxx-x
+  google_analytics_key:
 
   # Profile links, leave blank to ignore
   social: 
-    github: gayanvirajith
-    twitter: gayanvirajith
-    facebook: gayanvirajith
-    gplus: +GayanVirajith
-    dribble: gayan
+    github: xabikos
+    twitter: xabikos
+    facebook:
+    gplus:
+    dribble:
     pinterest: 
   # Toggle disclaimer in footer
-  show_disclaimer: true
+  show_disclaimer: false
+  show_download_link: false
 
 # Conversion / Build settings 
 markdown:    kramdown
