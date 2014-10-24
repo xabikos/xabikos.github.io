@@ -2,10 +2,7 @@
 ---
 
 // Import reset 
-@import "reset.css";
-
-// Import syntax 
-@import "syntax.css";
+@import "partials/reset";
 
 // Import colors, fonts etc...
 @import "partials/variables";
@@ -15,6 +12,10 @@
 
 // Import layout mixin
 @import "partials/layout";
+
+// Import syntax 
+@import "partials/syntax";
+
 
 /* -------------------------------- 
 
@@ -361,6 +362,11 @@ footer.main-footer {
 
 div.page-content {
   @extend .default-page-content;
+  min-height: initial;
+
+  @include MQ(M) {
+    min-height: 400px;
+  }
 }    
 
 div.page-content {

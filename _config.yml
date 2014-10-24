@@ -1,43 +1,43 @@
 # Harmony Jekyll theme general configurations 
 
 # Base URL
-baseurl:
+baseurl: /harmony
 
 # Site live URL
-#url: http://xabikos.com
+url: http://gayan.me
 
 # Localhost 
-url: http://localhost:4000
+# url: http://127.0.0.1:4000  
 
 # Harmony theme configuration. Please change accordingly.
 harmony:
-  name: xabikos
+  name: Harmony
   # Little description about your site
-  description: Harmony is a free responsive jekyll theme.
-  meta_description: Harmony is free responsive jekyll theme. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+  description: Harmony is free responsive jekyll theme.
+  meta_description: Harmony is free responsive jekyll theme. This will appear in your document head meta (for Google search results) and in your feed.xml site description.
   basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
   author: # Author details
-    name: Charalampos Karypidis
+    name: Gayan Virajith
     email: gayanvirajith@gmail.com
     url: http://gayanvirajith.github.io
 
   # Google Analytics key, leave blank to ignore
-  google_analytics_key: 
+  google_analytics_key: UA-xxxx-x
 
   # Profile links, leave blank to ignore
   social: 
-    github: xabikos
-    twitter: xabikos
-    facebook: 
-    gplus: 
-    dribble: 
+    github: gayanvirajith
+    twitter: gayanvirajith
+    facebook: gayanvirajith
+    gplus: +GayanVirajith
+    dribble: gayan
     pinterest: 
   # Toggle disclaimer in footer
   show_disclaimer: true
 
 # Conversion / Build settings 
 markdown:    kramdown
-highlighter: null
+highlighter: pygments # this is how you put pygments config in jekyll 2.0 instead of pygments: true
 
 # Permalinks
 permalink:        pretty
