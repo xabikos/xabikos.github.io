@@ -4,24 +4,18 @@ title: About me
 permalink: /about/
 ---
 
-Hi, I am Gayan Virajith, a developer (who works on the web) based on Sri Lanka. 
-Graduated from the University College Dublin (National University of Ireland). 
+Hi, I am Charalampos Karypidis, a Greek all around .NET software developer who tries to fit other activities, except development, in his life. 
+Currently I am based in Greece in the city of [Thessaloniki][thessaloniki] and I am working remotely for a New York based company called [Ordereze][ordereze].  
 
-I am Working for [template-factory.nl][tf] also known as [Mearch ICT][m].
-Prefer to serve with Php and Ruby based stacks and also love to work 
-on [Jekyll][jekyll] and [Processwire CMS/CMF][pw].
+As I am trying to stay up to date by reading a bunch of interesting blogs I decided that I must give some of the knowledge back by writing what I believe could be useful to other developers.
 
 ### Contact me
 
-Find me on [Google+][google] / [Github][github] / [Twitter][Twitter] or just say `Hello` at 
-[gayanvirajith@gmail.com](gayanvirajith@gmail.com).
+Find me on [Twitter][Twitter] / [Github][github] / [LinkedIn][linkedIn] or just say `Hello` at 
+[xaralaboskaripidis@gmail.com](mailto:xaralaboskaripidis@gmail.com).
 
-
-[tf]: http://template-factory.nl
-[m]: http://mearch.com
-[pw]: http://processwire.com
-[pwf]: http://processwire.com/talk
-[jekyll]: http://jekyllrb.com
-[github]: https://github.com/gayanvirajith
-[google]: https://plus.google.com/+GayanVirajith
-[twitter]: https://twitter.com/gayanvirajith
+[thessaloniki]: https://maps.google.com/maps/ms?msid=206456703665638724100.000476c724e3c55d3487a&msa=0&ll=40.62594,22.949066&spn=0.112959,0.264187
+[ordereze]: http://www.ordereze.com/
+[twitter]: https://twitter.com/xabikos "Charalampos Karypidis Twitter profile"
+[github]: https://github.com/xabikos "Charalampos Karypidis Github profile"
+[linkedIn]: https://www.linkedin.com/in/charalamposkarypidis "Charalampos Karypidis LinkedIn profile"
