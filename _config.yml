@@ -1,48 +1,10 @@
-# Harmony Jekyll theme general configurations 
+# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
 
 # Base URL
-baseurl: 
+baseurl:
 
-# Site live URL
-url: http://xabikos.com
-
-# Localhost 
-#url: http://127.0.0.1:4000  
-
-# Harmony theme configuration. Please change accordingly.
-harmony:
-  name: xabikos
-  # Little description about your site
-  description:
-  meta_description: This is Charalampos Karypidis technical blog. It contains information about software development with Microsoft Technologies (.NET, Windows Azure, Azure web sites)
-  basetheme: theme-base-01 # pre defined thmes are darken, blue-water, redish.
-  author: # Author details
-    name: Charalampos Karypidis
-    email: xaralaboskaripidis@gmail.com
-    url: http://xabikos.com
-
-  # Google Analytics key, leave blank to ignore
-  google_analytics_key:
-
-  # Profile links, leave blank to ignore
-  social: 
-    github: xabikos
-    twitter: xabikos
-    facebook:
-    gplus:
-    dribble:
-    pinterest: 
-  # Toggle disclaimer in footer
-  show_disclaimer: false
-  show_download_link: false
-
-# Conversion / Build settings 
-markdown:    kramdown
-highlighter: null
-
-# Permalinks
-permalink:        pretty
-
+paginate: 10 # pagination based on number of posts
+paginate_path: "page:num"
 exclude: 
   - CNAME
   - Gemfile
@@ -51,8 +13,30 @@ exclude:
   - .gitignore
   - .sass-cache
   - Gemfile.lock
+highlighter: null
+markdown: kramdown
 
-# Sass conversion configs
-sass:
-    sass_dir: assets/css/_sass
-    style: :compressed
+
+defaults:
+  -
+    scope:
+      path: "" # empty string for all files
+    values:
+      title:
+
+description: Stylish Jekyll Theme
+author:
+  name: charalampos karypidis
+  email: xaralaboskaripidis@gmail.com
+  github: xabikos
+  twitter: xabikos
+  pinterest:
+  linkedin: charalamposkarypidis
+  bio: Life runs on code
+  email_md5:
+
+rss_path: feed.xml
+categories_path: categories.html
+tags_path: tags.html
+
+BASE_PATH:

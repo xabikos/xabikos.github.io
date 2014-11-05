@@ -1,8 +1,3 @@
-_site/
-.DS_Store
-.*.swp
-.idea
-.sass-cache/
-*~
-bourbon/
-Gemfile.lock
+_config.yml
+_site/*
+*Thumbs.db
