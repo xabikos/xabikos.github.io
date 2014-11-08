@@ -7,7 +7,7 @@ categories: [security, identity system]
 tags: [asp.net mvc, asp.net web api, action filters]
 fullview: false
 comments: true
-shortinfo: Action filters is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way. In this post I am showing how we can create an action filter attribute in order to decorate our controllers to check if the current user has verified his email address after registering in our system through new ASP.NET Identity system. <a href="http://xabikos.com/security/identity%20system/2014/11/05/user-confirmed-filter-attribute.html"> Continue reading...</a>
+shortinfo: Action filters is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way. In this post I am showing how we can create an action filter attribute in order to decorate our controllers to check if the current user has verified his email address after registering in our system through new ASP.NET Identity system.
 ---
 
 [Action filters][af] is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way. 
@@ -40,7 +40,7 @@ public class UserConfirmedFilterAttribute : ActionFilterAttribute {
 	}
 }
 {% endhighlight %}
-	
+
 The code is very simple as in the case the user has confirmed the email the execution flow continues normally. In the opposite case we are able to redirect the user 
 in a specific action of a controller by replacing the corresponding values.
 
