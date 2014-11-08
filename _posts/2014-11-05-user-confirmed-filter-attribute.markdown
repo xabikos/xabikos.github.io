@@ -46,7 +46,7 @@ in a specific action of a controller by replacing the corresponding values.
 
 The code is very similar for Web Api controllers as we can see right below.
 
-{% highlight csharp %}
+{% highlight c# %}
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class UserConfirmedWebApiFilterAttribute : ActionFilterAttribute {
 	public override Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken) {
