@@ -13,7 +13,7 @@ exclude:
   - .gitignore
   - .sass-cache
   - Gemfile.lock
-highlighter: null
+highlighter: pygments
 markdown: kramdown
 
 
