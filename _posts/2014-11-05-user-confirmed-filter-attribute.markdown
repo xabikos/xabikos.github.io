@@ -15,7 +15,7 @@ In this post I am showing how we can create an action filter attribute in order 
 after registering in our system through new ASP.NET [Identity system][identity]. I am going to create two filters as we want to have this functionality in regular MVC controllers and in Web Api controllers as well.
 
 First lets see the code for the regular MVC controllers. What we have to do is just derive from ActionFilterAttribute class that lives in System.Web.Mvc namespace and override the OnActionExecuting method.
-{% highlight csharp %}
+{% highlight c# %}
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class UserConfirmedFilterAttribute : ActionFilterAttribute {
 	public override void OnActionExecuting(ActionExecutingContext filterContext) {
