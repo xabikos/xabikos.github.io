@@ -40,3 +40,7 @@ categories_path: categories.html
 tags_path: tags.html
 
 BASE_PATH:
+
+post:
+  extension: md
+editor: notepad++
