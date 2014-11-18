@@ -40,7 +40,17 @@ task :post, :title do |t, args|
   editor = CONFIG["editor"]
   check_title(title)
   filename = "#{DATE}-#{transform_to_slug(title, extension)}"
-  content = read_file(template)
+  content = "---
+layout: post
+title:
+date: 
+description: 
+categories: []
+tags: []
+fullview: false
+comments: true
+shortinfo: 
+---"
   create_file(POSTS, filename, content, title, editor)
 end
 
