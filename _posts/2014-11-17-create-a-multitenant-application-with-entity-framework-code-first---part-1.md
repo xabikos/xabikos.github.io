@@ -173,7 +173,7 @@ public class Message {
 }
 {% endhighlight %}
 
-As we can see here there is another important change in the class. The TenantId property now is private which means we can't explicitly assign it from our code base. The last issue is quite important as we are not able to assign an invalid TenantId by mistake. Furthermore we don't have to take care of assign a TenantId at all.
+As we can see here there is another important change in the class. The TenantId property now is private set which means we can't explicitly assign it from our code base. The last issue is quite important as we are not able to assign an invalid TenantId by mistake. Furthermore we don't have to take care of assign a TenantId at all.
 
 ***
 
