@@ -10,4 +10,4 @@ comments: true
 shortinfo: In continuation of Part 1 of creating a multitenant application with Entity Framework Code First we are going to see how we can use Interceptors to apply filtering when querying the data in a transparent way for our application.
 ---
 
-In continuation of [Part 1]({% post_url 2014-11-17-create %}) of creating a multitenant application with Entity Framework Code First we are going to see how we can use Interceptors to apply filtering when querying the data in a transparent way for our application.
+In continuation of [Part 1]({% post_url 2014-11-17-create-a-multitenant-application-with-entity-framework-code-first---part-1 %}) of creating a multitenant application with Entity Framework Code First we are going to see how we can use Interceptors to apply filtering when querying the data in a transparent way for our application.
