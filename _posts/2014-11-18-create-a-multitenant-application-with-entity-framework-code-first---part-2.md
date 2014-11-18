@@ -165,7 +165,7 @@ This class is very handy and powerful as we can do several configurations and is
 This was the second part of a series of three posts. You can find the first part [here][part1]. I have created a [project in Github][github] that contains the full code in a relatively change model. In the next post I will describe how we can use interceptors to modify the insert, update and delete command.
 
 
-[part1]: ({% post_url 2014-11-17-create-a-multitenant-application-with-entity-framework-code-first---part-1 %})
+[part1]: {% post_url 2014-11-17-create-a-multitenant-application-with-entity-framework-code-first---part-1 %}
 [effilters]: https://github.com/jbogard/EntityFramework.Filters/
 [effiltersauthor]: http://lostechies.com/jimmybogard/
 [effilterspackage]: https://www.nuget.org/packages/EntityFramework.Filters/
