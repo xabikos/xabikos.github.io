@@ -11,7 +11,7 @@ shortinfo: In continuation of Part 1 about creating a multitenant application wi
 ---
 #### A short introduction
 
-In continuation of [Part 1][part1] about creating a multitenant application with Entity Framework Code First we are going to see how we can use Interceptors to apply filtering when querying the data in a transparent way for our application. It is highly recommended to read the [first part][part1] as this post assumes you are already familiar with the problem.
+In continuation of <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html"> Part 1</a> about creating a multitenant application with Entity Framework Code First we are going to see how we can use Interceptors to apply filtering when querying the data in a transparent way for our application. It is highly recommended to read the <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html">first part </a> as this post assumes you are already familiar with the problem.
 
 The idea behind this implementation came up based on two very nice projects in Github which try to give a generic solution to the filtering problem. The first project is called [EntityFramework.Filters][effilters] and it was the first one from [Jimmy Bogard][effiltersauthor] which has a NuGet [package][effilterspackage] as well. The second very similar project which solved a couple of issues is [EntityFramework.DynamicFilters][efdynamicfilters] from [jcachat][efdynamicfiltersauthor] which also comes with a NuGet [package][efdynamicfilterspackage]. I have to highlight here that both of the projects give a wider solution to query filtering with Entity Framework and for our solution we are going to use just the general idea of filtering.
 
@@ -164,8 +164,6 @@ This class is very handy and powerful as we can do several configurations and is
 
 This was the second part of a series of three posts. You can find the first part [here][part1]. I have created a [project in Github][github] that contains the full code in a relatively change model. In the next post I will describe how we can use interceptors to modify the insert, update and delete command.
 
-
-[part1]: {% post_url 2014-11-17-create-a-multitenant-application-with-entity-framework-code-first---part-1 %}
 [effilters]: https://github.com/jbogard/EntityFramework.Filters/
 [effiltersauthor]: http://lostechies.com/jimmybogard/
 [effilterspackage]: https://www.nuget.org/packages/EntityFramework.Filters/
