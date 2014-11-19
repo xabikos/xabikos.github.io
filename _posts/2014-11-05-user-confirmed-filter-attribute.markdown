@@ -18,26 +18,26 @@ First lets see the code for the regular MVC controllers. What we have to do is j
 {% highlight c# %}
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class UserConfirmedFilterAttribute : ActionFilterAttribute {
-	public override void OnActionExecuting(ActionExecutingContext filterContext) {
-		var userId = filterContext.HttpContext.User.Identity.GetUserId();
-		// User is not logged in so redirect him to log in controller action
-		if (string.IsNullOrEmpty(userId)) {
-			filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(
-						new { controller = "Account", action = "Login", 
-								returnUrl = filterContext.HttpContext.Request.RawUrl }));
-			return;
-		}
+    public override void OnActionExecuting(ActionExecutingContext filterContext) {
+        var userId = filterContext.HttpContext.User.Identity.GetUserId();
+        // User is not logged in so redirect him to log in controller action
+        if (string.IsNullOrEmpty(userId)) {
+            filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(
+                        new { controller = "Account", action = "Login", 
+                                returnUrl = filterContext.HttpContext.Request.RawUrl }));
+            return;
+        }
 
-		var userManager = filterContext.HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-		if (!userManager.IsEmailConfirmed(userId)) {
-			filterContext.Result =
-				new RedirectToRouteResult(
-					new RouteValueDictionary(new { controller = "ConstrollerNameToRedirect", 
-									action = "ActionMethodToRedirect" }));
-			return;
-		}
-		base.OnActionExecuting(filterContext);
-	}
+        var userManager = filterContext.HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        if (!userManager.IsEmailConfirmed(userId)) {
+            filterContext.Result =
+                new RedirectToRouteResult(
+                    new RouteValueDictionary(new { controller = "ConstrollerNameToRedirect", 
+                                    action = "ActionMethodToRedirect" }));
+            return;
+        }
+        base.OnActionExecuting(filterContext);
+    }
 }
 {% endhighlight %}
 
@@ -49,23 +49,23 @@ The code is very similar for Web Api controllers as we can see right below.
 {% highlight c# %}
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 public class UserConfirmedWebApiFilterAttribute : ActionFilterAttribute {
-	public override Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken) {
-		var userId = actionContext.RequestContext.Principal.Identity.GetUserId();
-		// User is not logged in so redirect him to log in controller action
-		if (string.IsNullOrEmpty(userId)) {
-			actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.Unauthorized,
-				"You must be logged in to access this resource");
-			return Task.FromResult(0);
-		}
+    public override Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken) {
+        var userId = actionContext.RequestContext.Principal.Identity.GetUserId();
+        // User is not logged in so redirect him to log in controller action
+        if (string.IsNullOrEmpty(userId)) {
+            actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.Unauthorized,
+                "You must be logged in to access this resource");
+            return Task.FromResult(0);
+        }
 
-		var userManager = actionContext.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-		if (!userManager.IsEmailConfirmed(userId)) {
-			actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.BadRequest,
-				"You must be verify your email address in order to access this resource");
-			return Task.FromResult(0);
-		}
-		return base.OnActionExecutingAsync(actionContext, cancellationToken);
-	}
+        var userManager = actionContext.Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        if (!userManager.IsEmailConfirmed(userId)) {
+            actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.BadRequest,
+                "You must be verify your email address in order to access this resource");
+            return Task.FromResult(0);
+        }
+        return base.OnActionExecutingAsync(actionContext, cancellationToken);
+    }
 }
 {% endhighlight %}
 
