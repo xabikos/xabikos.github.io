@@ -12,7 +12,7 @@ shortinfo:
 
 #### Connection with previous posts
 
-This is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html"> Part 1</a> where there is an introduction in the problem we are trying to solve and some infrastructure code required to continue. <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/18/create-a-multitenant-application-with-entity-framework-code-first---part-2.html"> Part 2</a> describes the query filtering that is happening automatically in the entire application. In this post I am going to show how we can manipulate the CommandTree interceptor in order to modify the insert, update and delete commands. The idea of implement something like this came to my mind after watching [Rowan Miller's][miller] excellent [session][session] in North America TechEd, which I highly recommend you to watch.
+This is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html"> Part 1</a> where there is an introduction in the problem we are trying to solve and some infrastructure code required to continue. <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/18/create-a-multitenant-application-with-entity-framework-code-first---part-2.html"> Part 2</a> describes the query filtering that is happening automatically in the entire application. In this post I am going to show how we can use the CommandTree interceptor in order to modify the insert, update and delete commands. The idea of implement something like this came to my mind after watching [Rowan Miller's][miller] excellent [session][session] in North America TechEd, which I highly recommend you to watch.
 
 ***
 
@@ -21,57 +21,57 @@ This is the last post of the series of how we can use Entity Framework Code Firs
 Let's start by presenting the code of insert command which is probably the simplest case. What we want to achieve is to always assign the correct TenantId when saving an entity that has this property. I have to remind here that Message class has a private set in TenantId property so there is no way to assign it from the code base.
 {% highlight c# %}
 public class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {
-	public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
-		if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
-			// Check that there is an authenticated user in this context
-			var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
-			if (identity == null){
-				return;
-			}
-			var userIdclaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdclaim == null) {
-				return;
-			}			
-			var userId = userIdclaim.Value;
-			
-			var insertCommand = interceptionContext.Result as DbInsertCommandTree;
-			if (insertCommand != null) {
-				var column = TenantAwareAttribute.GetTenantColumnName(insertCommand.Target.VariableType.EdmType);
-				if (!string.IsNullOrEmpty(column)) {
-					// Create the variable reference in order to create the property
-					var variableReference = DbExpressionBuilder.Variable(insertCommand.Target.VariableType,
-						insertCommand.Target.VariableName);
-					// Create the property to which will assign the correct value
-					var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
-					// Create the set clause, object representation of sql insert command
-					var tenantSetClause =
-						DbExpressionBuilder.SetClause(tenantProperty, DbExpression.FromString(userId));
+    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
+        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
+            // Check that there is an authenticated user in this context
+            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+            if (identity == null){
+                return;
+            }
+            var userIdclaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdclaim == null) {
+                return;
+            }			
+            var userId = userIdclaim.Value;
+            
+            var insertCommand = interceptionContext.Result as DbInsertCommandTree;
+            if (insertCommand != null) {
+                var column = TenantAwareAttribute.GetTenantColumnName(insertCommand.Target.VariableType.EdmType);
+                if (!string.IsNullOrEmpty(column)) {
+                    // Create the variable reference in order to create the property
+                    var variableReference = DbExpressionBuilder.Variable(insertCommand.Target.VariableType,
+                        insertCommand.Target.VariableName);
+                    // Create the property to which will assign the correct value
+                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
+                    // Create the set clause, object representation of sql insert command
+                    var tenantSetClause =
+                        DbExpressionBuilder.SetClause(tenantProperty, DbExpression.FromString(userId));
 
-					// Remove potential assignment of tenantId for extra safety 
-					var filteredSetClauses =
-						insertCommand.SetClauses.Cast<DbSetClause>()
-							.Where(sc => ((DbPropertyExpression)sc.Property).Property.Name != column);
+                    // Remove potential assignment of tenantId for extra safety 
+                    var filteredSetClauses =
+                        insertCommand.SetClauses.Cast<DbSetClause>()
+                            .Where(sc => ((DbPropertyExpression)sc.Property).Property.Name != column);
 
-					// Construct the final clauses, object representation of sql insert command values
-					var finalSetClauses =
-						new ReadOnlyCollection<DbModificationClause>
-						(new List<DbModificationClause>(filteredSetClauses) {
-							tenantSetClause
-						});
+                    // Construct the final clauses, object representation of sql insert command values
+                    var finalSetClauses =
+                        new ReadOnlyCollection<DbModificationClause>
+                        (new List<DbModificationClause>(filteredSetClauses) {
+                            tenantSetClause
+                        });
 
-					var newInsertCommand = new DbInsertCommandTree(
-						insertCommand.MetadataWorkspace,
-						insertCommand.DataSpace,
-						insertCommand.Target,
-						finalSetClauses,
-						insertCommand.Returning);
+                    var newInsertCommand = new DbInsertCommandTree(
+                        insertCommand.MetadataWorkspace,
+                        insertCommand.DataSpace,
+                        insertCommand.Target,
+                        finalSetClauses,
+                        insertCommand.Returning);
 
-					interceptionContext.Result = newInsertCommand;                    
-					return;
-				}
-			}
-		}
-	}
+                    interceptionContext.Result = newInsertCommand;                    
+                    return;
+                }
+            }
+        }
+    }
 }
 {% endhighlight %}
 
@@ -84,58 +84,58 @@ The most important piece of code is where we create the set clause. To further e
 Now we have to modify any update command that is sent to the database and remove any change in the value of tenantId and add an extra where statement based on the tenantId. So after the interception any SQL update command is going to have an extra and statement like AND TenantId = 'value of tenantId'.
 {% highlight c# %}
 public class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {
-	public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
-		if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
-			// Check that there is an authenticated user in this context
-			var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
-			if (identity == null){
-				return;
-			}
-			var userIdclaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdclaim == null) {
-				return;
-			}			
-			var userId = userIdclaim.Value;
-			var updateCommand = interceptionContext.Result as DbUpdateCommandTree;
-			if (updateCommand != null) {
-				var column = TenantAwareAttribute.GetTenantColumnName(updateCommand.Target.VariableType.EdmType);
-				if (!string.IsNullOrEmpty(column)){
-					// Create the variable reference in order to create the property
-					var variableReference = DbExpressionBuilder.Variable(updateCommand.Target.VariableType,
-						updateCommand.Target.VariableName);
-					// Create the property to which will assign the correct value
-					var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
-					// Create the tenantId where predicate, object representation of sql where tenantId = value statement
-					var tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));
+    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
+        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
+            // Check that there is an authenticated user in this context
+            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+            if (identity == null){
+                return;
+            }
+            var userIdclaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdclaim == null) {
+                return;
+            }			
+            var userId = userIdclaim.Value;
+            var updateCommand = interceptionContext.Result as DbUpdateCommandTree;
+            if (updateCommand != null) {
+                var column = TenantAwareAttribute.GetTenantColumnName(updateCommand.Target.VariableType.EdmType);
+                if (!string.IsNullOrEmpty(column)){
+                    // Create the variable reference in order to create the property
+                    var variableReference = DbExpressionBuilder.Variable(updateCommand.Target.VariableType,
+                        updateCommand.Target.VariableName);
+                    // Create the property to which will assign the correct value
+                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
+                    // Create the tenantId where predicate, object representation of sql where tenantId = value statement
+                    var tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));
 
-					// Remove potential assignment of tenantId for extra safety
-					var filteredSetClauses = 
-						updateCommand.SetClauses.Cast<DbSetClause>()
-							.Where(sc => ((DbPropertyExpression)sc.Property).Property.Name != column);
+                    // Remove potential assignment of tenantId for extra safety
+                    var filteredSetClauses = 
+                        updateCommand.SetClauses.Cast<DbSetClause>()
+                            .Where(sc => ((DbPropertyExpression)sc.Property).Property.Name != column);
 
-					// Construct the final clauses, object representation of sql insert command values
-					var finalSetClauses =
-						new ReadOnlyCollection<DbModificationClause>(new List<DbModificationClause>(filteredSetClauses));
+                    // Construct the final clauses, object representation of sql insert command values
+                    var finalSetClauses =
+                        new ReadOnlyCollection<DbModificationClause>(new List<DbModificationClause>(filteredSetClauses));
 
-					// The initial predicate is the sql where statement
-					var initialPredicate = updateCommand.Predicate;
-					// Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'
-					var finalPredicate = initialPredicate.And(tenantIdWherePredicate);
+                    // The initial predicate is the sql where statement
+                    var initialPredicate = updateCommand.Predicate;
+                    // Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'
+                    var finalPredicate = initialPredicate.And(tenantIdWherePredicate);
 
-					var newUpdateCommand = new DbUpdateCommandTree(
-						updateCommand.MetadataWorkspace,
-						updateCommand.DataSpace,
-						updateCommand.Target,
-						finalPredicate,
-						finalSetClauses,
-						updateCommand.Returning);
+                    var newUpdateCommand = new DbUpdateCommandTree(
+                        updateCommand.MetadataWorkspace,
+                        updateCommand.DataSpace,
+                        updateCommand.Target,
+                        finalPredicate,
+                        finalSetClauses,
+                        updateCommand.Returning);
 
-					interceptionContext.Result = newUpdateCommand;					
-					return;
-				}
-			}
-		}
-	}
+                    interceptionContext.Result = newUpdateCommand;					
+                    return;
+                }
+            }
+        }
+    }
 }
 {% endhighlight %}
 
@@ -149,47 +149,47 @@ The last piece to finish the puzzle is to modify the delete command before trave
 
 {% highlight c# %}
 public class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {
-	public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
-		if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
-			// Check that there is an authenticated user in this context
-			var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
-			if (identity == null){
-				return;
-			}
-			var userIdclaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdclaim == null) {
-				return;
-			}			
-			var userId = userIdclaim.Value;
-			
-			var deleteCommand = interceptionContext.Result as DbDeleteCommandTree;
-			if (deleteCommand != null){
-				var column = TenantAwareAttribute.GetTenantColumnName(deleteCommand.Target.VariableType.EdmType);
-				if (!string.IsNullOrEmpty(column)){
-					// Create the variable reference in order to create the property
-					var variableReference = DbExpressionBuilder.Variable(deleteCommand.Target.VariableType,
-						deleteCommand.Target.VariableName);
-					// Create the property to which will assign the correct value
-					var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
-					var tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));
+    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
+        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
+            // Check that there is an authenticated user in this context
+            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+            if (identity == null){
+                return;
+            }
+            var userIdclaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdclaim == null) {
+                return;
+            }			
+            var userId = userIdclaim.Value;
+            
+            var deleteCommand = interceptionContext.Result as DbDeleteCommandTree;
+            if (deleteCommand != null){
+                var column = TenantAwareAttribute.GetTenantColumnName(deleteCommand.Target.VariableType.EdmType);
+                if (!string.IsNullOrEmpty(column)){
+                    // Create the variable reference in order to create the property
+                    var variableReference = DbExpressionBuilder.Variable(deleteCommand.Target.VariableType,
+                        deleteCommand.Target.VariableName);
+                    // Create the property to which will assign the correct value
+                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
+                    var tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));
 
-					// The initial predicate is the sql where statement
-					var initialPredicate = deleteCommand.Predicate;
-					// Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'
-					var finalPredicate = initialPredicate.And(tenantIdWherePredicate);
-					
-					var newDeleteCommand = new DbDeleteCommandTree(
-						deleteCommand.MetadataWorkspace,
-						deleteCommand.DataSpace,
-						deleteCommand.Target,
-						finalPredicate);
+                    // The initial predicate is the sql where statement
+                    var initialPredicate = deleteCommand.Predicate;
+                    // Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'
+                    var finalPredicate = initialPredicate.And(tenantIdWherePredicate);
+                    
+                    var newDeleteCommand = new DbDeleteCommandTree(
+                        deleteCommand.MetadataWorkspace,
+                        deleteCommand.DataSpace,
+                        deleteCommand.Target,
+                        finalPredicate);
 
-					interceptionContext.Result = newDeleteCommand;
-					return ;
-				}
-			}
-		}
-	}
+                    interceptionContext.Result = newDeleteCommand;
+                    return ;
+                }
+            }
+        }
+    }
 }
 {% endhighlight %}
 
