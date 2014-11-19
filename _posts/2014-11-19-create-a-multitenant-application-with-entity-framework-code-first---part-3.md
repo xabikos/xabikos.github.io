@@ -201,6 +201,10 @@ We create manually again a predicate and do a logical AND with the original pred
 
 This was the last part of a series of posts. You can find the first part <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html">here</a> and the second <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/18/create-a-multitenant-application-with-entity-framework-code-first---part-2.html">here</a>. I hope that these posts will become useful to other developers as this is the way we solved the multi tenancy data access problem in the project I am currently working on. Any comments or thoughts to improve the code are more than welcome. As I mentioned in the previous posts I have a public [Github repository][github] that contains a full project with the demonstrated code.
 
+###<a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html">Part 1</a>
+
+###<a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/18/create-a-multitenant-application-with-entity-framework-code-first---part-2.html">Part 2</a>
+
 
 [miller]: http://romiller.com/
 [session]: http://channel9.msdn.com/Events/TechEd/NorthAmerica/2014/DEV-B417#fbid=

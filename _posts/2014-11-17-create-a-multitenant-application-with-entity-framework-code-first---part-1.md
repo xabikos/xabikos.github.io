@@ -179,6 +179,10 @@ As we can see here there is another important change in the class. The TenantId 
 
 This was the first part of a series of three posts. It includes the problem and the infrastructure code for what is coming on the next posts. For those that can't wait I have created a [project in Github][github] that contains the full code in a relatively change model. In the next post I will describe how we can use the code we already created to apply filtering based on TenantId always in a transparent way for our application.
 
+###<a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/18/create-a-multitenant-application-with-entity-framework-code-first---part-2.html">Part 2</a>
+
+###<a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/19/create-a-multitenant-application-with-entity-framework-code-first---part-3.html">Part 3</a>
+
 
 
 [mt]: http://en.wikipedia.org/wiki/Multitenancy
