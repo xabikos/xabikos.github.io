@@ -28,29 +28,29 @@ The idea behind this implementation came up based on two very nice projects in G
 The first step is to implement the IDbCommandTreeInterceptor and the TreeCreated method it declares, in order to take control of the query send to the database. The TenantCommandTreeInterceptor class is available below:
 {% highlight c# %}
 public class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {
-	public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
-		if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
-			// Check that there is an authenticated user in this context
-			var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
-			if (identity == null){
-				return;
-			}
-			var userIdclaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdclaim == null) {
-				return;
-			}			
-			// In case of query command change the query by adding a filtering based on tenantId 
-			var queryCommand = interceptionContext.Result as DbQueryCommandTree;
-			if (queryCommand != null) {
-				var newQuery = queryCommand.Query.Accept(new TenantQueryVisitor());
-				interceptionContext.Result = new DbQueryCommandTree(
-					queryCommand.MetadataWorkspace,
-					queryCommand.DataSpace,
-					newQuery);
-				return;
-			}
-		}
-	}
+    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
+        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
+            // Check that there is an authenticated user in this context
+            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+            if (identity == null){
+                return;
+            }
+            var userIdclaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdclaim == null) {
+                return;
+            }			
+            // In case of query command change the query by adding a filtering based on tenantId 
+            var queryCommand = interceptionContext.Result as DbQueryCommandTree;
+            if (queryCommand != null) {
+                var newQuery = queryCommand.Query.Accept(new TenantQueryVisitor());
+                interceptionContext.Result = new DbQueryCommandTree(
+                    queryCommand.MetadataWorkspace,
+                    queryCommand.DataSpace,
+                    newQuery);
+                return;
+            }
+        }
+    }
 }
 {% endhighlight %}
 
@@ -66,32 +66,32 @@ Now it's time to see how the Query visitor class looks like.
 
 {% highlight c# %}
 public class TenantQueryVisitor: DefaultExpressionVisitor {
-	public override DbExpression Visit(DbScanExpression expression) {
-		var column = TenantAwareAttribute.GetTenantColumnName(expression.Target.ElementType);
-		
-		if (!string.IsNullOrEmpty(column)) {
-			// Get the current expression
-			var dbExpression = base.Visit(expression);
-			// Get the current expression binding 
-			var currentExpressionBinding = DbExpressionBuilder.Bind(dbExpression);
-			// Create the variable reference in order to create the property
-			var variableReference = DbExpressionBuilder.Variable(currentExpressionBinding.VariableType,
-				currentExpressionBinding.VariableName);
-			// Create the property based on the variable in order to apply the equality
-			var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
-			// Create the parameter which is an object representation of a sql parameter.
-			// We have to create a parameter and not perform a direct comparison with Equal function for example
-			// as this logic is cached per query and called only once
-			var tenantParameter = DbExpressionBuilder.Parameter(tenantProperty.Property.TypeUsage,
-				TenantAwareAttribute.TenantIdFilterParameterName);
-			// Apply the equality between property and parameter.
-			var filterExpression = DbExpressionBuilder.Equal(tenantProperty, tenantParameter);
-			// Apply the filtering to the initial query
-			return DbExpressionBuilder.Filter(currentExpressionBinding, filterExpression);
-		}
+    public override DbExpression Visit(DbScanExpression expression) {
+        var column = TenantAwareAttribute.GetTenantColumnName(expression.Target.ElementType);
+        
+        if (!string.IsNullOrEmpty(column)) {
+            // Get the current expression
+            var dbExpression = base.Visit(expression);
+            // Get the current expression binding 
+            var currentExpressionBinding = DbExpressionBuilder.Bind(dbExpression);
+            // Create the variable reference in order to create the property
+            var variableReference = DbExpressionBuilder.Variable(currentExpressionBinding.VariableType,
+                currentExpressionBinding.VariableName);
+            // Create the property based on the variable in order to apply the equality
+            var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
+            // Create the parameter which is an object representation of a sql parameter.
+            // We have to create a parameter and not perform a direct comparison with Equal function for example
+            // as this logic is cached per query and called only once
+            var tenantParameter = DbExpressionBuilder.Parameter(tenantProperty.Property.TypeUsage,
+                TenantAwareAttribute.TenantIdFilterParameterName);
+            // Apply the equality between property and parameter.
+            var filterExpression = DbExpressionBuilder.Equal(tenantProperty, tenantParameter);
+            // Apply the filtering to the initial query
+            return DbExpressionBuilder.Filter(currentExpressionBinding, filterExpression);
+        }
 
-		return base.Visit(expression);
-	}
+        return base.Visit(expression);
+    }
 }
 {% endhighlight %}
 
@@ -104,40 +104,40 @@ The code here requires some knowledge of entity framework internals but I will t
 The command interceptor class is shown below:
 {% highlight c# %}
 internal class TenantCommandInterceptor : IDbCommandInterceptor {
-	public void NonQueryExecuting(DbCommand command, DbCommandInterceptionContext<int> interceptionContext){
-		SetTenantParameterValue(command);
-	}
+    public void NonQueryExecuting(DbCommand command, DbCommandInterceptionContext<int> interceptionContext){
+        SetTenantParameterValue(command);
+    }
 
-	public void NonQueryExecuted(DbCommand command, DbCommandInterceptionContext<int> interceptionContext){}
+    public void NonQueryExecuted(DbCommand command, DbCommandInterceptionContext<int> interceptionContext){}
 
-	public void ReaderExecuting(DbCommand command, DbCommandInterceptionContext<DbDataReader> interceptionContext){
-		SetTenantParameterValue(command);
-	}
+    public void ReaderExecuting(DbCommand command, DbCommandInterceptionContext<DbDataReader> interceptionContext){
+        SetTenantParameterValue(command);
+    }
 
-	public void ReaderExecuted(DbCommand command, DbCommandInterceptionContext<DbDataReader> interceptionContext){}
+    public void ReaderExecuted(DbCommand command, DbCommandInterceptionContext<DbDataReader> interceptionContext){}
 
-	public void ScalarExecuting(DbCommand command, DbCommandInterceptionContext<object> interceptionContext){
-		SetTenantParameterValue(command);
-	}
+    public void ScalarExecuting(DbCommand command, DbCommandInterceptionContext<object> interceptionContext){
+        SetTenantParameterValue(command);
+    }
 
-	public void ScalarExecuted(DbCommand command, DbCommandInterceptionContext<object> interceptionContext){}
+    public void ScalarExecuted(DbCommand command, DbCommandInterceptionContext<object> interceptionContext){}
 
-	private static void SetTenantParameterValue(DbCommand command) {
-		var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
-		if ((command == null) || (command.Parameters.Count == 0) || identity == null) {
-			return;
-		}
-		var userClaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-		if (userClaim != null) {
-			var userId = userClaim.Value;
-			// Enumerate all command parameters and assign the correct value in the one we added inside query visitor
-			foreach (DbParameter param in command.Parameters) {
-				if (param.ParameterName != TenantAwareAttribute.TenantIdFilterParameterName)
-					return;
-				param.Value = userId;
-			}
-		}
-	}
+    private static void SetTenantParameterValue(DbCommand command) {
+        var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+        if ((command == null) || (command.Parameters.Count == 0) || identity == null) {
+            return;
+        }
+        var userClaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        if (userClaim != null) {
+            var userId = userClaim.Value;
+            // Enumerate all command parameters and assign the correct value in the one we added inside query visitor
+            foreach (DbParameter param in command.Parameters) {
+                if (param.ParameterName != TenantAwareAttribute.TenantIdFilterParameterName)
+                    return;
+                param.Value = userId;
+            }
+        }
+    }
 }
 {% endhighlight %}
 
@@ -150,10 +150,10 @@ Here the logic is simpler as we just have to find the SQL Parameter if present a
 The last step is to make Entity Framework aware of the interceptors we added before. To accomplish this we must use one of the latest addition in Framework the [DbConfiguration][dbconfiguration] class. We have to derive from this class and add the two interceptors as the code snippet below shows:
 {% highlight c# %}
 public class EntityFrameworkConfiguration : DbConfiguration {
-	public EntityFrameworkConfiguration() {
-		AddInterceptor(new TenantCommandInterceptor());
-		AddInterceptor(new TenantCommandTreeInterceptor());
-	}
+    public EntityFrameworkConfiguration() {
+        AddInterceptor(new TenantCommandInterceptor());
+        AddInterceptor(new TenantCommandTreeInterceptor());
+    }
 }
 {% endhighlight %}
 

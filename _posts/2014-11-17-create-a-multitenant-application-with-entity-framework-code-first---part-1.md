@@ -19,24 +19,24 @@ A highly increasing request we have to serve as developers, especially after Sof
 The first part includes the description of the model used across the application. Lets assume we want to manage some Messages for our application and each logged in user should be able to access and modify only his personal messages. The Message is a classic [POCO][poco] class that doesn't have any Entity Framework specific code as you can see in the snippet below.
 {% highlight c# %}
 public class Message {
-	public long Id { get; set; }
-	public string TenantId { get; set; }
-	public virtual ApplicationUser User { get; set; }
-	[Required]
-	public string Description { get; set; }
+    public long Id { get; set; }
+    public string TenantId { get; set; }
+    public virtual ApplicationUser User { get; set; }
+    [Required]
+    public string Description { get; set; }
 }
 {% endhighlight %}
 
 We follow mainly the convention over configuration approach Entity Framework provides and the only explicit configuration we have to apply in our Message class is to declare TenantId as foreign key for User property by adding the code that follows in the DbContext class we are going to use for data access.
 {% highlight c# %}
 protected override void OnModelCreating(DbModelBuilder modelBuilder) {
-	base.OnModelCreating(modelBuilder);
-	
-	modelBuilder.Entity<Message>()
-		.HasRequired(m => m.User)
-		.WithMany()
-		.HasForeignKey(m => m.TenantId)
-		.WillCascadeOnDelete(true);
+    base.OnModelCreating(modelBuilder);
+    
+    modelBuilder.Entity<Message>()
+        .HasRequired(m => m.User)
+        .WithMany()
+        .HasForeignKey(m => m.TenantId)
+        .WillCascadeOnDelete(true);
 }
 {% endhighlight %}
 
@@ -48,55 +48,55 @@ I will first implement an MVC Controller that includes the logic of filtering ba
 {% highlight c# %}
 [Authorize]
 public class MessagesController : Controller {
-	private ApplicationDbContext db = new ApplicationDbContext();
+    private ApplicationDbContext db = new ApplicationDbContext();
 
-	private string UserId { get { return User.Identity.IsAuthenticated ? User.Identity.GetUserId() : string.Empty; }}
+    private string UserId { get { return User.Identity.IsAuthenticated ? User.Identity.GetUserId() : string.Empty; }}
 
-	public ActionResult Index() {
-		// Tenant specific query logic
-		var messages = db.Messages.Include(m => m.User).Where(m => m.TenantId == UserId);
-		return View(messages.ToList());
-	}
+    public ActionResult Index() {
+        // Tenant specific query logic
+        var messages = db.Messages.Include(m => m.User).Where(m => m.TenantId == UserId);
+        return View(messages.ToList());
+    }
 
-	public ActionResult Details(long? id) {
-		// Tenant specific query logic
-		Message message = db.Messages.SingleOrDefault(m => m.Id == id && m.TenantId == UserId);
-		if (message == null) {
-			return HttpNotFound();
-		}
-		return View(message);
-	}
+    public ActionResult Details(long? id) {
+        // Tenant specific query logic
+        Message message = db.Messages.SingleOrDefault(m => m.Id == id && m.TenantId == UserId);
+        if (message == null) {
+            return HttpNotFound();
+        }
+        return View(message);
+    }
 
-	public ActionResult Create([Bind(Include = "Id,Description")] Message message) {
-		if (ModelState.IsValid) {
-			// Assign tenant Id explicitly
-			message.TenantId = UserId;
-			db.Messages.Add(message);
-			db.SaveChanges();
-			return RedirectToAction("Index");
-		}
-		return View(message);
-	}
+    public ActionResult Create([Bind(Include = "Id,Description")] Message message) {
+        if (ModelState.IsValid) {
+            // Assign tenant Id explicitly
+            message.TenantId = UserId;
+            db.Messages.Add(message);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        return View(message);
+    }
 
-	public ActionResult Edit(long? id) {
-		// Tenant specific query logic
-		Message message = db.Messages.SingleOrDefault(m => m.Id == id && m.TenantId == UserId);
-		if (message == null) {
-			return HttpNotFound();
-		}
-		return View(message);
-	}
+    public ActionResult Edit(long? id) {
+        // Tenant specific query logic
+        Message message = db.Messages.SingleOrDefault(m => m.Id == id && m.TenantId == UserId);
+        if (message == null) {
+            return HttpNotFound();
+        }
+        return View(message);
+    }
 
-	public ActionResult Edit([Bind(Include = "Id,Description")] Message message) {
-		if (ModelState.IsValid) {
-			// Assign tenant Id explicitly
-			message.TenantId = UserId;
-			db.Entry(message).State = EntityState.Modified;
-			db.SaveChanges();
-			return RedirectToAction("Index");
-		}
-		return View(message);
-	}
+    public ActionResult Edit([Bind(Include = "Id,Description")] Message message) {
+        if (ModelState.IsValid) {
+            // Assign tenant Id explicitly
+            message.TenantId = UserId;
+            db.Entry(message).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        return View(message);
+    }
 }
 {% endhighlight %}
 
@@ -117,21 +117,21 @@ The first step is to create an ordinary attribute class with which we can annota
 {% highlight c# %}
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class TenantAwareAttribute : Attribute {
-	public const string TenantAnnotation = "TenantAnnotation";
-	public const string TenantIdFilterParameterName = "TenantIdParameter";
-	
-	public string ColumnName { get; private set; }
+    public const string TenantAnnotation = "TenantAnnotation";
+    public const string TenantIdFilterParameterName = "TenantIdParameter";
+    
+    public string ColumnName { get; private set; }
 
-	public TenantAwareAttribute(string columnName) {
-		ColumnName = columnName;
-	}
+    public TenantAwareAttribute(string columnName) {
+        ColumnName = columnName;
+    }
 
-	public static string GetTenantColumnName(EdmType type) {
-		MetadataProperty annotation = type.MetadataProperties.SingleOrDefault( 
-			p => p.Name.EndsWith(string.Format("customannotation:{0}", TenantAnnotation)));
+    public static string GetTenantColumnName(EdmType type) {
+        MetadataProperty annotation = type.MetadataProperties.SingleOrDefault( 
+            p => p.Name.EndsWith(string.Format("customannotation:{0}", TenantAnnotation)));
 
-		return annotation == null ? null : (string)annotation.Value;
-	}
+        return annotation == null ? null : (string)annotation.Value;
+    }
 }
 {% endhighlight %}
 
@@ -141,18 +141,18 @@ The next step is to use this attribute by adding a custom [Entity Framework conv
 
 {% highlight c# %}
 protected override void OnModelCreating(DbModelBuilder modelBuilder) {
-	base.OnModelCreating(modelBuilder);
-	
-	modelBuilder.Entity<Message>()
-		.HasRequired(m => m.User)
-		.WithMany()
-		.HasForeignKey(m => m.TenantId)
-		.WillCascadeOnDelete(true);
-	
-	var conv = new AttributeToTableAnnotationConvention<TenantAwareAttribute, string>(
+    base.OnModelCreating(modelBuilder);
+    
+    modelBuilder.Entity<Message>()
+        .HasRequired(m => m.User)
+        .WithMany()
+        .HasForeignKey(m => m.TenantId)
+        .WillCascadeOnDelete(true);
+    
+    var conv = new AttributeToTableAnnotationConvention<TenantAwareAttribute, string>(
                     TenantAwareAttribute.TenantAnnotation, (type, attributes) => attributes.Single().ColumnName);
 
-	modelBuilder.Conventions.Add(conv);
+    modelBuilder.Conventions.Add(conv);
 }
 {% endhighlight %}
 
@@ -165,11 +165,11 @@ After creating this infrastructure code the Message class can change and decorat
 {% highlight c# %}
 [TenantAware("TenantId")]
 public class Message {
-	public long Id { get; set; }
-	public string TenantId { get; private set; }
-	public virtual ApplicationUser User { get; set; }
-	[Required]
-	public string Description { get; set; }
+    public long Id { get; set; }
+    public string TenantId { get; private set; }
+    public virtual ApplicationUser User { get; set; }
+    [Required]
+    public string Description { get; set; }
 }
 {% endhighlight %}
 
