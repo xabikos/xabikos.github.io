@@ -7,7 +7,7 @@ categories: [multitenant, application design, software as a service]
 tags: [entity framework, multi-tenant, interceptors, code first]
 fullview: false
 comments: true
-shortinfo: 
+shortinfo: This is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read <a href="http://xabikos.com/multitenant/application%20design/software%20as%20a%20service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html"> Part 1</a> where there is an introduction in the problem we are trying to solve and some infrastructure code required to continue.
 ---
 
 #### Connection with previous posts
