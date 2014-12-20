@@ -40,11 +40,18 @@ This time I chose to change subject completely and talk about [Entity Framework]
          <img src="/assets/images/speaker1tb.jpg" alt="keynote">
       </a>
    </div>
-   <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-1">
+   <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-1" style>
       <a href="/assets/images/speaker2.jpg" class="thumbnail">
          <img src="/assets/images/speaker2tb.jpg" alt="keynote">
       </a>
    </div>
+</div>
+
+
+<div class="row" style="margin-top:2%;margin-bottom:4%;">
+ <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-3">
+<iframe src="//www.slideshare.net/slideshow/embed_code/42890889" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+</div>
 </div>
 
 #### Networking - Socializing
