@@ -193,7 +193,7 @@ public class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {
 }
 {% endhighlight %}
 
-We create manually again a predicate and do a logical AND with the original predicate of the command. After this we creating a new delete command and assign it as the interception result. There is no need to create different interceptors class per command of course. We can combine all of them in just one class as you can see in [this axample][interceptor].
+We create manually again a predicate and do a logical AND with the original predicate of the command. After this we creating a new delete command and assign it as the interception result. There is no need to create different interceptors class per command of course. We can combine all of them in just one class as you can see in [this example][interceptor].
 
 ***
 
