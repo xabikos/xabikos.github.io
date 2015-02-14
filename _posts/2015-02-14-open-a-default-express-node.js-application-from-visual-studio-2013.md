@@ -13,7 +13,7 @@ shortinfo:
 #### node.js and Visual Studio
 
 [node.js][node] is a very popular framework which allows having Javacript executed on the server. This is what everybody reads when navigating on the [official site][node]:
-_Node.js® is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices._
+> Node.js® is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.
 
 During the last couple of years Microsoft has put a lot of effort to provide a nice experience when we want to develop a node.js application inside Visual Studio. This comes of course in conjunction of supporting node.js hosting on the company's cloud platform [Microsoft Azure][nodeAzure]. We are able to develop any node.js application in Visual Studio because of the [Node.js Tools for Visual Studio][nodetools] awesome open source project. This is an extension that is completely free and anyone who is interested could install it on Visual Studio. After installing the extension we can create various node.js applications as we can see in the following picture.
 
@@ -80,7 +80,7 @@ Here is the small problem as it doesn't give us the option to choose the bin\www
 
 #### Fixing the problem of initial file
 
-When the importing of the project is finished we can press F5 in order to achieve the same result as previously where we start the project from command line. But if we do this we will experience an error. A normal debugging session is starting and a command window with debugger details is shown but after a couple of seconds the windows is disappeared and no application is present. This is due the starting file selection we made earlier. In order to fix this issue we need to edit the project and change the corresponding setting manually. We have to spot the _<StartupFile>app.js</StartupFile>_** and change it to _<StartupFile>bin\www</StartupFile>_**. After saving the changes, reload the project and pressing F5 everything should be work as expected.
+When the importing of the project is finished we can press F5 in order to achieve the same result as previously where we start the project from command line. But if we do this we will experience an error. A normal debugging session is starting and a command window with debugger details is shown but after a couple of seconds the windows is disappeared and no application is present. This is due the starting file selection we made earlier. In order to fix this issue we need to edit the project and change the corresponding setting manually. We have to spot the **StartupFile** setting that is set in **app.js** and change it to **bin\www**. After saving the changes, reload the project and pressing F5 everything should be work as expected.
 
 You can find more details for node.js tools for visual studio in the [codeplex project][nodetools]
 
