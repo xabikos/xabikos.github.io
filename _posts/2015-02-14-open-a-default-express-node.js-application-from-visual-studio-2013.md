@@ -7,7 +7,7 @@ categories: [node.js]
 tags: [Express, Visual Studio]
 fullview: false
 comments: true
-shortinfo: 
+shortinfo: uring the last couple of years Microsoft has put a lot of effort to provide a nice experience when we want to develop a node.js application by using Visual Studio. This comes of course in conjunction of supporting node.js hosting on the company's cloud platform Microsoft Azure.
 ---
 
 #### node.js and Visual Studio
