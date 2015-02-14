@@ -12,10 +12,10 @@ shortinfo:
 
 #### node.js and Visual Studio
 
-[node.js][node] is a very popular framework which allows having Javacript executed on the server. This is what everybody reads when navigating on the [official site][node]:
-> Node.js® is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.
+[node.js][node] is a very popular platform which allows having Javacript executed on the server. This is what everybody reads when navigating on the [official site][node]:
+_Node.js® is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices._
 
-During the last couple of years Microsoft has put a lot of effort to provide a nice experience when we want to develop a node.js application inside Visual Studio. This comes of course in conjunction of supporting node.js hosting on the company's cloud platform [Microsoft Azure][nodeAzure]. We are able to develop any node.js application in Visual Studio because of the [Node.js Tools for Visual Studio][nodetools] awesome open source project. This is an extension that is completely free and anyone who is interested could install it on Visual Studio. After installing the extension we can create various node.js applications as we can see in the following picture.
+During the last couple of years Microsoft has put a lot of effort to provide a nice experience when we want to develop a node.js application by using Visual Studio. This comes of course in conjunction of supporting node.js hosting on the company's cloud platform [Microsoft Azure][nodeAzure]. We are able to develop any node.js application in Visual Studio because of the [Node.js Tools for Visual Studio][nodetools] awesome open source project. This is an extension that is completely free and anyone who is interested could install it on Visual Studio. After installing the extension we can create various node.js applications as we can see in the following picture.
 
 <div class="row">
    <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
@@ -27,15 +27,15 @@ During the last couple of years Microsoft has put a lot of effort to provide a n
 
 #### Open an existing node application
 
-The most interesting part according to my opinion is the first one, **From existing Node.js code,** as it gives us the opportunity to open an existing node application that was created from a different IDE and maybe on a different platform (linux, OSX). This option gives us tremendous freedom to start contributing in a node.js project that some parts of the team use different IDE and are on different platforms and we can still use Visual Studio without problem. Let me demonstrate how this works and also mention a fix to a minor problem.
+The most interesting part according to my opinion is the first one, **From existing Node.js code,** as it gives us the opportunity to open an existing node application that was created from a different IDE and maybe on a different platform (Linux, OSX). This option gives us tremendous freedom to start contributing in a node.js project that some members of the team use different IDE and are on different platforms and we can still use Visual Studio without problem. Let me demonstrate how this works and also mention a fix to a minor problem.
 
 #### Create a default Express application
 
-The first step is to create the default Express application. I am not going to explain the prerequisites of doing this as [here][expressCreate] you can find very detailed instructions. After we have installed all the required dependencies and we have created a folder somewhere in our system, we should open a command windows to the newly created folder and just hit:
+The first step is to create the default Express application. I am not going to explain the prerequisites of doing this as [here][expressCreate] you can find very detailed instructions. After we have installed all the required dependencies and we have created a folder somewhere in our system, we should open a command window to the newly created folder and just hit:
 {% highlight c# %}
 express firstExpressApplication
 {% endhighlight %}
-and after this is finished we have to move the newly created folder and install the referenced node packages. This can be done my hitting:
+and after this is finished we have to move to the newly created folder and install the referenced node packages. This can be done my hitting:
 {% highlight c# %}
 cd firstExpressApplication
 npm install
@@ -48,7 +48,7 @@ After doing this just open a browser tab and navigate to the url: http://localho
 
 #### Open the Express application from Visual Studio
 
-Now is the most interesting part where we can open this application from visual studio and make a small change. After giving a name in the window that is shown in the picture above we press next and we are presented with a window like the one following where we should choose the folder that contains the application's code.
+Now is the most interesting part where we can open this application from visual studio further change it. After giving a name in the window that is shown in the picture above we press next and we are presented with a window like the one following where we should choose the folder that contains the application's code.
 
 <div class="row">
    <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
@@ -80,7 +80,7 @@ Here is the small problem as it doesn't give us the option to choose the bin\www
 
 #### Fixing the problem of initial file
 
-When the importing of the project is finished we can press F5 in order to achieve the same result as previously where we start the project from command line. But if we do this we will experience an error. A normal debugging session is starting and a command window with debugger details is shown but after a couple of seconds the windows is disappeared and no application is present. This is due the starting file selection we made earlier. In order to fix this issue we need to edit the project and change the corresponding setting manually. We have to spot the **StartupFile** setting that is set in **app.js** and change it to **bin\www**. After saving the changes, reload the project and pressing F5 everything should be work as expected.
+When the importing of the project is finished we can press F5 in order to achieve the same result as previously where we start the project from command line. But if we do this we will experience an error. A normal debugging session is starting and a command window with debugger details is shown but after a couple of seconds the window is disappeared and no application is present. This is due the starting file selection we made earlier. In order to fix this issue we need to edit the project and change the corresponding setting manually. We have to spot the **StartupFile** setting that is set in **app.js** and change it to **bin\www**. After saving the changes, reload the project and pressing F5 everything should work as expected.
 
 You can find more details for node.js tools for visual studio in the [codeplex project][nodetools]
 
