@@ -12,9 +12,9 @@ shortinfo: React is a JavaScript library that allows us to build modern and comp
 
 #### About React
 
-[React][react] is a JavaScript libary that allows us to build modern and complex web interfaces. It's becoming more and more popular and there is a huge [buzz][reactBuzz] around it. The last is absolutely normal as [Facebook][facebook] is the creator of the library and they have heavily invested on it. They even have developed some architecture guidelines on how to build a React application which is called [Flux][flux]. Lately I am involved in a project that we are using these tools and I have to say it has really fun as it is a fresh technology and certainly changes the way I was used to develop web applications. Lastly React is one of the best libraries out there to develop what is called an [Isomorphic JavaScript][isomorphic] application. I won't explain more why isomorphic looks like a safe choice for the future of the web as this is not the goal of the post.
+[React][react] is a JavaScript libary that allows us to build modern and complex web interfaces. It's becoming more and more popular and there is a huge [buzz][reactBuzz] around it. The last is absolutely normal as [Facebook][facebook] is the creator of the library and they have heavily invested on it. They even have developed some architecture guidelines on how to build a React application which is called [Flux][flux]. Lately I am involved in a project that we are using these tools and I have to say it is really fun as it is a fresh technology and certainly changes the way I was used to develop web applications. Lastly React is one of the best libraries out there to develop what is called an [Isomorphic JavaScript][isomorphic] application. I won't explain more why isomorphic looks like a safe choice for the future of the web as this is not the goal of the post.
 
-One of the strongest points of React library is that you can produce the same HTML mark up in an easy way both client and server side. As a JavaScript library is easily understand how this happens as it doesn't differs from other client side templating engines like [Handlebars][handlebars] or [Dust.js][dust]. Now on the server side it's really easy to create the same HTML mark up once you are using [node.js][node] something that is really powerful as you could potentially render one part of the application server side and the rest client side. This approach has the obvious advantage that the user experience is excellent as it gets the most important part of the information immediately and the rest of the page can be loaded client side.
+One of the strongest points of React library is that you can produce the same HTML mark up in an easy way both client and server side. As a JavaScript library it is easy to understand how this happens because it doesn't differs from other client side templating engines like [Handlebars][handlebars] or [Dust.js][dust]. Now on the server side it's really easy to create the same HTML mark up once you are using [node.js][node] something that is quite powerful as you could potentially render one part of the application server side and the rest client side. This approach has the obvious advantage that the user experience is excellent as it gets the most important part of the information immediately and the rest of the page can be loaded client side.
 
 #### ReactJS.NET and ASP.NET MVC
 
@@ -40,7 +40,7 @@ Now I will try to demonstrate how to use ReactJS.NET inside a Web Form. The firs
    </div>
 </div>
 
-The following step is to install the Reactjs.Net nuget package by typing the command below in the Package Manager console
+The following step is to install the Reactjs.Net nuget package by typing the command below in the Package Manager console.
 
 {% highlight c# %}
 Install-Package React.Web.Mvc4 -verbose
@@ -91,7 +91,7 @@ protected void Page_Load(object sender, EventArgs e)
   PageContent.Text = reactComponent.RenderHtml();
 }{% endhighlight %}
 
-The code here is pretty simple and self explanatory I believe. One point I would like to highlight is that the first parameter in CreateComponent method it should be the same as the name of the variable in the first line of jsx file. On top of this the second argument can be any object that holds the application data. In the picture below you can see the final result.
+The code here is pretty simple and self explanatory. One point I would like to highlight is that the first parameter in CreateComponent method it should be the same as the name of the variable in the first line of jsx file. On top of this the second argument can be any object that holds the application data. In the picture below you can see the final result.
 
 <div class="row">
    <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
