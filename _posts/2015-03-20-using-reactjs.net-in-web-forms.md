@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Use Reactjs.net in Web Forms"
+title: "Using Reactjs.net in Web Forms"
 date: 2015-03-18 20:00:00
 description: An example application of how to use Reactjs.net inside an ASP.NET Web Forms project
 categories: [server side templating, web development]
