@@ -3,7 +3,7 @@
 # Base URL
 baseurl:
 
-paginate: 10 # pagination based on number of posts
+paginate: 5 # pagination based on number of posts
 paginate_path: "page:num"
 exclude: 
   - CNAME
