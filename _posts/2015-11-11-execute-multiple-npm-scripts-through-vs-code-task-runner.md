@@ -2,7 +2,7 @@
 layout: post
 title: "Execute multiple npm scripts through VS Code task runner"
 date: 2015-11-11 20:40:00
-description: A posd describing how to execute multiple npm scripts inside VS Code environment
+description: A post describing how to execute multiple npm scripts inside VS Code environment
 categories: [npm scripts, task runner]
 tags: [nodejs]
 fullview: false
