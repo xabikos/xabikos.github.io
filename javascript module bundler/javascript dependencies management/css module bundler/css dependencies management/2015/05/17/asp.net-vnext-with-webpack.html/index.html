@@ -1,0 +1,501 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Web development with asp.net and React.js">
+    <title>ASP.NET vNext with webpack - Web development with asp.net and React.js</title>
+    <meta name="author" content="Babis Karypidis">
+    
+        <meta name="keywords" content="webpack,asp.net core,asp.net vnext">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Why I was absentIt is a long time from my last post but so much have happened during this time period. Initially I was involved in the organization of local Global Azure Bootcamp in Thessaloniki. It w">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="ASP.NET vNext with webpack">
+<meta property="og:url" content="http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/index.html">
+<meta property="og:site_name" content="Web development with asp.net and React.js">
+<meta property="og:description" content="Why I was absentIt is a long time from my last post but so much have happened during this time period. Initially I was involved in the organization of local Global Azure Bootcamp in Thessaloniki. It w">
+<meta property="og:image" content="http://xabikostest.github.io/webpack.png">
+<meta property="og:updated_time" content="2016-05-08T18:30:42.858Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ASP.NET vNext with webpack">
+<meta name="twitter:description" content="Why I was absentIt is a long time from my last post but so much have happened during this time period. Initially I was involved in the organization of local Global Azure Bootcamp in Thessaloniki. It w">
+<meta name="twitter:creator" content="@xabikos">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-quwccsthbllipo6252snb2tfkddvrsp1eczkytpz3vmxpsb6nwodixemlkux.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-56484404-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Web development with asp.net and React.js</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="/#about">
+        
+        
+            <img class="header-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">Babis Karypidis</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/xabikos" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xabikos" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/in/charalamposkarypidis/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xaralaboskaripidis@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            ASP.NET vNext with webpack
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Sun May 17 2015 20:10:00 GMT+0200">
+	
+		    May 17, 2015
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/javascript-module-bundler/">javascript module bundler</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/">javascript dependencies management</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/css-module-bundler/">css module bundler</a>, <a class="category-link" href="/categories/javascript-module-bundler/javascript-dependencies-management/css-module-bundler/css-dependencies-management/">css dependencies management</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h4 id="Why-I-was-absent"><a href="#Why-I-was-absent" class="headerlink" title="Why I was absent"></a>Why I was absent</h4><p>It is a long time from my last post but so much have happened during this time period. Initially I was involved in the organization of local <a href="http://global.azurebootcamp.net/" target="_blank" rel="external">Global Azure Bootcamp</a> in <a href="http://www.skgazure.com/" target="_blank" rel="external">Thessaloniki</a>. It was our first attempt to organize an one day event and we are very satisfied by the result. It is an amazing feeling to be part of a global community for one day. Right after Azure Bootcamp, Microsoft’s biggest development conference took place in San Fransisco. At <a href="http://www.buildwindows.com/" target="_blank" rel="external">Build</a> tons of new features were announced and I am still straggling to watch all the interesting videos on <a href="http://channel9.msdn.com/events/build/2015/" target="_blank" rel="external">Channel 9</a>. Lastly I attended the first international development conference that was organized in the city I am living, in Thessaloniki. <a href="http://devitconf.org/" target="_blank" rel="external">Devit</a> took place on Friday 15th of May and it was very successful and amazingly well organized conference.</p>
+<h4 id="ASP-NET-vNext"><a href="#ASP-NET-vNext" class="headerlink" title="ASP.NET vNext"></a>ASP.NET vNext</h4><p><a href="http://www.asp.net/vnext" target="_blank" rel="external">asp.net vNext</a> is the next version of the well know web stack framework and I won’t describe it at all as it’s quite easy to find details about it. It’s not yet production ready but that point comes really close. I am very interested on this new web stack and the direction it gets so I am playing with it when the time permits. Among the other changes the core team has done, they also changed the way the client side package management is done. The framework adopts well known practices on the field and adds to the core system tools like <a href="https://www.npmjs.com/" target="_blank" rel="external">npm</a> and <a href="http://bower.io/" target="_blank" rel="external">bower</a> package managers and <a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a> and <a href="http://gruntjs.com/" target="_blank" rel="external">grunt</a> tasks runners. For the people that are not familiar with basic <a href="https://nodejs.org/" target="_blank" rel="external">nodejs</a> development and client side package management they should spend some time and study those as it’s part of the next version of asp.net. An excellent place to start the reading is the newly added official <a href="http://docs.asp.net/en/latest/index.html" target="_blank" rel="external">documentation site</a> of asp.net vNext.<br><a id="more"></a></p>
+<h4 id="Client-side-package-management-and-webpack"><a href="#Client-side-package-management-and-webpack" class="headerlink" title="Client side package management and webpack"></a>Client side package management and webpack</h4><p>During the last months in my work I am heavily involved on developing a large <a href="http://facebook.github.io/react/" target="_blank" rel="external">Reactjs</a> application. For this reason we need to use a lot of node and bower packages something that makes the usage of a module bundler an absolute requirement. After some investigation we chose to use <a href="http://webpack.github.io/" target="_blank" rel="external">webpack</a> as it is very popular, it has an active community behind it and it fits perfect with react development. One of the greatest features of webpack is that it allows to use node packages directly inside the browser.</p>
+<h4 id="Combine-ASP-NET-vNext-with-webpack"><a href="#Combine-ASP-NET-vNext-with-webpack" class="headerlink" title="Combine ASP.NET vNext with webpack"></a>Combine ASP.NET vNext with webpack</h4><p> The current project templates for asp.net vNext that are part of Visual Studio 2015 RC offer a completely different way of managing the client side packages dependencies which is in the right direction. I will try to make a step further and show how we can use webpack to organize our JavaScript and css code in a more modular way. To demonstrate this I have created <a href="https://github.com/xabikos/aspvnextwebpack" target="_blank" rel="external">a repository in Github</a> which would be a good starting point. After cloning the repository locally there are a sequence of commands you should execute in order to launch the application. Before executing these commands you have to make sure that <a href="https://nodejs.org/" target="_blank" rel="external">nodejs</a> is properly install on your machine and also the latest asp.net vNext is also present. You can get more info on how to install the asp.net vNext again in the <a href="http://docs.asp.net/en/latest/index.html" target="_blank" rel="external">official documentation site</a>. Once the environment is ready you need to execute form a command line that points to the same folder you cloned the repository the command:</p>
+ <figure class="codeblock codeblock--tabbed"><figcaption><span>Install node modules</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><figure class="highlight cmd" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p> in order to install all the node packages. Then we need to install all the referenced bower components by executing first</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Install bower globally</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><figure class="highlight cmd" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install bower -g</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p> to install Bower globally and then</p>
+ <figure class="codeblock codeblock--tabbed"><figcaption><span>Install bower modules</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><figure class="highlight cmd" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bower install</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p> to install the bower components. After doing this you need to generate the bundles through the preconfigured gulp task. So you need to execute</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Install gulp globally</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install gulp -g</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p> to install Gulp as a global package and then</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Start gulp development task</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gulp development</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p>in order to create the JavaScript and css bundles. The final step is to launch the development server by executing</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Start asp.net core application</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnx . web</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p>After a while you should see Started on the command line and if you navigate to <a href="http://localhost:5000/" target="_blank" rel="external">http://localhost:5000/</a> you should get a page like the one following</p>
+<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="webpack.png" title="webpack" data-fancybox-group="webpack"><img class="fig-img" src="webpack.png" alt="webpack"></a></div><div style="clear:both;"></div>
+<h4 id="JavaScript-dependencies-management"><a href="#JavaScript-dependencies-management" class="headerlink" title="JavaScript dependencies management"></a>JavaScript dependencies management</h4><p>The application is really basic and what it does is after entering a number in the textbox and pressing submit renders some Lorem ipsum text on the screen. The code for this exists in the index.cshtml file is pretty basic and easy to understand. But the interesting is how the Lorem global variable is available. This is done because in the _Layout.cshtml we include the app.bunle.js file which was generated by webpack when we executed the gulp development command. If you try to explore this file you would probably feel a bit confused as it contains many lines of code. But let’s take one step back and see where this file came from.</p>
+<p>Let’s start by looking at the file lorem.js which the content is following</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>A simple javascript module</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><figure class="highlight js" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> loremHipsum <span class="keyword">from</span> <span class="string">'lorem-hipsum'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> Lorem = {</span><br><span class="line">  addText(count, loremTextElement, loremValidationElement) {</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">isNaN</span>(count) || count &lt; <span class="number">1</span> || count &gt; <span class="number">100</span>) {</span><br><span class="line">	  loremValidationElement.html(<span class="string">'Invalid input'</span>);</span><br><span class="line">	} <span class="keyword">else</span> {</span><br><span class="line">	  loremTextElement.html(loremHipsum({</span><br><span class="line">        count: count,</span><br><span class="line">	    units: <span class="string">'sentences'</span></span><br><span class="line">	  }));</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> Lorem;</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p>As you can see we can use the new ES6 module system thanks to webpack and the <a href="https://github.com/babel/babel-loader/" target="_blank" rel="external">babel loader</a>. The lorem-hipsum is just on ordinal node package that we can consume directly inside our browser scripts. Also we export the object Lorem we created in the file. The object just contains a simple method that uses the node package to add some random text to the provided element. You should also notice that we can use the new way of declaring functions.</p>
+<p>The next important piece in the procedure is the app.js file which contains only two lines of code.</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Client side app entry point</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><figure class="highlight js" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Lorem = <span class="built_in">require</span>(<span class="string">'expose?Lorem!./lorem'</span>)</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'../styles/site.scss'</span>);</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p>This is the entry point in our application and the first line is the one that makes the Lorem variable available in the global scope through the <a href="https://github.com/webpack/expose-loader/" target="_blank" rel="external">expose-loader</a> webpack loader. The second line is related to css and we will explain it afterwards. So during the creation of the bundle webpack solves all the dependencies starting from app.js file and produces the final app.bundle.js file which can be referenced directly from an html page.</p>
+<h4 id="css-dependencies-management"><a href="#css-dependencies-management" class="headerlink" title="css dependencies management"></a>css dependencies management</h4><p>Let’s move on how webpack can assist us on stylesheets dependencies management. If everything is fine so far when you load the page you will notice that the top header animates and fades in to the page. This is done by the <a href="https://github.com/jdsimcoe/animated.sass/" target="_blank" rel="external">animated.sass</a> bower component which is referenced and applying certain classes. The most interesting piece of this exists in the file main.scss which looks like this:</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Application's style file</span><ul class="tabs"><li class="tab active">css</li></ul></figcaption><div class="tabs-content"><figure class="highlight" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@import "../bower_components/animated.sass/_animated.scss";</span><br><span class="line">@include animation(fade-in-down);</span><br><span class="line"></span><br><span class="line">.app-title{</span><br><span class="line">    @include animate(fade-in-down, 2s);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p>Here you can see that this is a regular scss file but we have imported a module from the bower components folder and then we can use it in a simple way. The entry point for the generated css bundle is the site.scss file which contains only one line that imports the main.scss file. This file could be used as a global repository that loads all the other scss files required by the application.</p>
+<h4 id="Additional-points"><a href="#Additional-points" class="headerlink" title="Additional points"></a>Additional points</h4><p>The current default template manages the predefined libraries in a way that could potentially implemented in a different way. For example the current implementation copies into the lib folder the packages that are hard copied inside the gulpfile and most specifically in copy command. This is not very flexible as it requires every time that a new dependency is added the modification of this file as well. A possible solution to this would be to require all this dependencies in the app.js file and let webpack to create the final bundle.</p>
+<p>I have also include a gulp task that creates the minified versions of all the bundles that should always been used in production environment.</p>
+<h4 id="The-next-blog-post"><a href="#The-next-blog-post" class="headerlink" title="The next blog post"></a>The next blog post</h4><p>The next post which will come soon will expand this one and will describe how we can build a full isomorphic JavaScript application with asp.net vNext, <a href="http://facebook.github.io/react/" target="_blank" rel="external">React.js</a>, <a href="http://reactjs.net/" target="_blank" rel="external">Reactjs.net</a> and <a href="http://webpack.github.io/" target="_blank" rel="external">webpack</a>.</p>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/asp-net-vnext/">asp.net vnext</a> <a class="tag tag--primary tag--small t-link" href="/tags/webpack/">webpack</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/javascript module bundler/javascript dependencies management/2015/10/03/webpack-aliases-and-relative-paths.html/"  data-tooltip="Webpack aliases and relative paths">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/server side templating/web development/2015/03/18/using-reactjs.net-in-web-forms.html/" data-tooltip="Using Reactjs.net in Web Forms">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2016 Babis Karypidis. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/javascript module bundler/javascript dependencies management/2015/10/03/webpack-aliases-and-relative-paths.html/"  data-tooltip="Webpack aliases and relative paths">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/server side templating/web development/2015/03/18/using-reactjs.net-in-web-forms.html/" data-tooltip="Using Reactjs.net in Web Forms">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+        
+            <h4 id="about-card-name">Babis Karypidis</h4>
+        
+            <h5 id="about-card-bio"><p>Hi, I am Babis Karypidis, a Greek software engineer who tries to fit other activities, except development, in his life.</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Freelance Software Engineer focusing on .NET, Azure and React.js</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Brussels, Belgium
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('https://globalazurereport.blob.core.windows.net/personalblog/web_development_top.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/scrip-rjanlllosg30d03qrddpwrs6wqf4k3v0bbo68hiifuvthyhqfefx2htcagu0.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://xabikostest.github.io/javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/';
+                 
+                    this.page.identifier = 'javascript module bundler/javascript dependencies management/css module bundler/css dependencies management/2015/05/17/asp.net-vnext-with-webpack.html/';
+                                  
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'xabikos';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+</html>

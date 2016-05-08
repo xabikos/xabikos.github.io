@@ -1,0 +1,477 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Web development with asp.net and React.js">
+    <title>ASP.NET User confirmed email filter attribute - Web development with asp.net and React.js</title>
+    <meta name="author" content="Babis Karypidis">
+    
+        <meta name="keywords" content="asp.net,identity,security">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Action filters is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way.In this post I a">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="ASP.NET User confirmed email filter attribute">
+<meta property="og:url" content="http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/index.html">
+<meta property="og:site_name" content="Web development with asp.net and React.js">
+<meta property="og:description" content="Action filters is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way.In this post I a">
+<meta property="og:updated_time" content="2016-05-08T18:30:42.910Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ASP.NET User confirmed email filter attribute">
+<meta name="twitter:description" content="Action filters is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way.In this post I a">
+<meta name="twitter:creator" content="@xabikos">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-quwccsthbllipo6252snb2tfkddvrsp1eczkytpz3vmxpsb6nwodixemlkux.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-56484404-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Web development with asp.net and React.js</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="/#about">
+        
+        
+            <img class="header-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">Babis Karypidis</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/xabikos" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xabikos" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/in/charalamposkarypidis/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xaralaboskaripidis@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            ASP.NET User confirmed email filter attribute
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Wed Nov 05 2014 20:00:00 GMT+0100">
+	
+		    Nov 05, 2014
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/security/">security</a>, <a class="category-link" href="/categories/security/identity-system/">identity system</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p><a href="https://www.asp.net/mvc/overview/older-versions-1/controllers-and-routing/understanding-action-filters-cs/" target="_blank" rel="external">Action filters</a> is a very powerful mechanism in an ASP.NET MVC application that gives us the capability of injecting functionality in our application in a centralized and structure way.<br>In this post I am showing how we can create an action filter attribute in order to decorate our controllers to check if the current user has verified his email address<br>after registering in our system through new ASP.NET <a href="http://www.asp.net/identity" target="_blank" rel="external">Identity system</a>. I am going to create two filters as we want to have this functionality in regular MVC controllers and in Web Api controllers as well.</p>
+<p>First lets see the code for the regular MVC controllers. What we have to do is just derive from ActionFilterAttribute class that lives in System.Web.Mvc namespace and override the OnActionExecuting method.<br><figure class="codeblock codeblock--tabbed"><figcaption><span>UserConfirmedFilterAttribute</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = <span class="keyword">true</span>, Inherited = <span class="keyword">true</span>)]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UserConfirmedFilterAttribute</span> : <span class="title">ActionFilterAttribute</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnActionExecuting</span>(<span class="params">ActionExecutingContext filterContext</span>) </span>{</span><br><span class="line">        <span class="keyword">var</span> userId = filterContext.HttpContext.User.Identity.GetUserId();</span><br><span class="line">        <span class="comment">// User is not logged in so redirect him to log in controller action</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(userId)) {</span><br><span class="line">            filterContext.Result = <span class="keyword">new</span> RedirectToRouteResult(<span class="keyword">new</span> RouteValueDictionary(</span><br><span class="line">                        <span class="keyword">new</span> { controller = <span class="string">"Account"</span>, action = <span class="string">"Login"</span>, </span><br><span class="line">                                returnUrl = filterContext.HttpContext.Request.RawUrl }));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> userManager = filterContext.HttpContext.GetOwinContext().GetUserManager&lt;ApplicationUserManager&gt;();</span><br><span class="line">        <span class="keyword">if</span> (!userManager.IsEmailConfirmed(userId)) {</span><br><span class="line">            filterContext.Result =</span><br><span class="line">                <span class="keyword">new</span> RedirectToRouteResult(</span><br><span class="line">                    <span class="keyword">new</span> RouteValueDictionary(<span class="keyword">new</span> { controller = <span class="string">"ConstrollerNameToRedirect"</span>, </span><br><span class="line">                                    action = <span class="string">"ActionMethodToRedirect"</span> }));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">base</span>.OnActionExecuting(filterContext);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure></p>
+<p>The code is very simple as in the case the user has confirmed the email the execution flow continues normally. In the opposite case we are able to redirect the user<br>in a specific action of a controller by replacing the corresponding values.</p>
+<p>The code is very similar for Web Api controllers as we can see right below.</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>UserConfirmedFilterAttribute</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = <span class="keyword">true</span>, Inherited = <span class="keyword">true</span>)]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UserConfirmedWebApiFilterAttribute</span> : <span class="title">ActionFilterAttribute</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> Task <span class="title">OnActionExecutingAsync</span>(<span class="params">HttpActionContext actionContext, CancellationToken cancellationToken</span>) </span>{</span><br><span class="line">        <span class="keyword">var</span> userId = actionContext.RequestContext.Principal.Identity.GetUserId();</span><br><span class="line">        <span class="comment">// User is not logged in so redirect him to log in controller action</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(userId)) {</span><br><span class="line">            actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.Unauthorized,</span><br><span class="line">                <span class="string">"You must be logged in to access this resource"</span>);</span><br><span class="line">            <span class="keyword">return</span> Task.FromResult(<span class="number">0</span>);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> userManager = actionContext.Request.GetOwinContext().GetUserManager&lt;ApplicationUserManager&gt;();</span><br><span class="line">        <span class="keyword">if</span> (!userManager.IsEmailConfirmed(userId)) {</span><br><span class="line">            actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.BadRequest,</span><br><span class="line">                <span class="string">"You must be verify your email address in order to access this resource"</span>);</span><br><span class="line">            <span class="keyword">return</span> Task.FromResult(<span class="number">0</span>);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">base</span>.OnActionExecutingAsync(actionContext, cancellationToken);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<p>Here I choose to implement the async version of OnActionExecuting method. If the user has confirmed the email address then the request is served normally.<br>If the user is not logged in or has not confirmed the email a bad request response is returned containing the additional message.</p>
+<p>You can find a complete <a href="https://github.com/xabikos/ActionFilters" target="_blank" rel="external">project</a> containing both of the attributes on Github.</p>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/action-filters/">action filters</a> <a class="tag tag--primary tag--small t-link" href="/tags/asp-net-mvc/">asp.net mvc</a> <a class="tag tag--primary tag--small t-link" href="/tags/asp-net-web-api/">asp.net web api</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/multitenant/application design/software as a service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html/"  data-tooltip="Create a multitenant application with Entity Framework Code First - Part 1">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2016 Babis Karypidis. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/multitenant/application design/software as a service/2014/11/17/create-a-multitenant-application-with-entity-framework-code-first---part-1.html/"  data-tooltip="Create a multitenant application with Entity Framework Code First - Part 1">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+        
+            <h4 id="about-card-name">Babis Karypidis</h4>
+        
+            <h5 id="about-card-bio"><p>Hi, I am Babis Karypidis, a Greek software engineer who tries to fit other activities, except development, in his life.</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Freelance Software Engineer focusing on .NET, Azure and React.js</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Brussels, Belgium
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('https://globalazurereport.blob.core.windows.net/personalblog/web_development_top.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/scrip-rjanlllosg30d03qrddpwrs6wqf4k3v0bbo68hiifuvthyhqfefx2htcagu0.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://xabikostest.github.io/security/identity system/2014/11/05/user-confirmed-filter-attribute.html/';
+                 
+                    this.page.identifier = 'security/identity system/2014/11/05/user-confirmed-filter-attribute.html/';
+                                  
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'xabikos';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+</html>
