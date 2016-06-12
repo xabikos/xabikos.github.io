@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Web development with asp.net and React.js">
+    <title>Talking about isomorphic JavaScript applications in  Progressive .NET 2016 - Web development with asp.net and React.js</title>
+    <meta name="author" content="Babis Karypidis">
+    
+        <meta name="keywords" content="conferences,asp.net core,isomorphic">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Presenting in the conferenceDuring the past couple of years I was actively involved in several meetups and local events mostly as attendee but some times as speaker or organizer as well. In general I">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Talking about isomorphic JavaScript applications in  Progressive .NET 2016">
+<meta property="og:url" content="http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/index.html">
+<meta property="og:site_name" content="Web development with asp.net and React.js">
+<meta property="og:description" content="Presenting in the conferenceDuring the past couple of years I was actively involved in several meetups and local events mostly as attendee but some times as speaker or organizer as well. In general I">
+<meta property="og:updated_time" content="2016-06-12T22:22:12.839Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Talking about isomorphic JavaScript applications in  Progressive .NET 2016">
+<meta name="twitter:description" content="Presenting in the conferenceDuring the past couple of years I was actively involved in several meetups and local events mostly as attendee but some times as speaker or organizer as well. In general I">
+<meta name="twitter:creator" content="@xabikos">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-quwccsthbllipo6252snb2tfkddvrsp1eczkytpz3vmxpsb6nwodixemlkux.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-56484404-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Web development with asp.net and React.js</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="/#about">
+        
+        
+            <img class="header-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="4">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">Babis Karypidis</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/xabikos" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xabikos" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/in/charalamposkarypidis/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xaralaboskaripidis@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Talking about isomorphic JavaScript applications in  Progressive .NET 2016
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Sun Jun 12 2016 23:26:45 GMT+0200">
+	
+		    Jun 12, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/conferences/">conferences</a>, <a class="category-link" href="/categories/conferences/public-events/">public events</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h4 id="Presenting-in-the-conference"><a href="#Presenting-in-the-conference" class="headerlink" title="Presenting in the conference"></a>Presenting in the conference</h4><p>During the past couple of years I was actively involved in several meetups and local events mostly as attendee but some times as speaker or organizer as well. In general I think this is one of the best ways to get to know really smart people and find out about the trends in the extremely fast moving software development world.<br><a id="more"></a><br>When I discover a really innovative subject I always want to know everything about it, and presenting this subject in front of other people is always a good reason to do it. As in the last couple of months I am working mostly as a <a href="http://facebook.github.io/react/" target="_blank" rel="external">Reactjs</a> developer and my interest for Microsoft’s new platform, <a href="https://www.microsoft.com/net" target="_blank" rel="external">.NET core</a> is high I am very interested on how we can combine these in order to get the best of the two worlds. This is going the subject of my presentation in the upcoming <a href="https://skillsmatter.com/conferences/7235-progressive-dot-net-tutorials-2016" target="_blank" rel="external">Progressive .NET 2016</a></p>
+<h4 id="Presentation-details"><a href="#Presentation-details" class="headerlink" title="Presentation details"></a>Presentation details</h4><p>During the presentation I will try initially, to explain what is an <a href="http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/" target="_blank" rel="external">isomorphic JavaScrip application</a> and how we can achieve this in the .NET ecosystem. For that reason two corresponding libraries are going to be presented. Initially the mature and well known <a href="http://reactjs.net/" target="_blank" rel="external">Reactjs .NET</a>. This library offers some unique capabilities and allows us to render our <a href="http://facebook.github.io/react/" target="_blank" rel="external">React.js</a> components on the server and return a fully rendered page to the browser. The library is used in many project but it comes with some limitations like the lack of supporting server side routing or use it for another framework.</p>
+<p>Microsoft on the other side, and most specifically the <a href="http://knockoutjs.com/" target="_blank" rel="external">Knockout</a> guy <a href="http://blog.stevensanderson.com/" target="_blank" rel="external">Steven Sanderson</a>, is developing an open source project in Github that is called <a href="https://github.com/aspnet/JavaScriptServices" target="_blank" rel="external">JavaScript services</a>. This library has as a goal to execute client side application of various frameworks and libraries on the server side. The project is quite promissing and currently you can use it with <a href="http://facebook.github.io/react/" target="_blank" rel="external">Reactjs</a>, <a href="https://angular.io/" target="_blank" rel="external">Angular2</a>, <a href="http://knockoutjs.com/" target="_blank" rel="external">Knockout</a> and more frameworkds will follow as the core project is framework agnostic.</p>
+<h4 id="Where-this-will-happen"><a href="#Where-this-will-happen" class="headerlink" title="Where this will happen"></a>Where this will happen</h4><p>My presentation will be in the context of <a href="https://skillsmatter.com/conferences/7235-progressive-dot-net-tutorials-2016" target="_blank" rel="external">Progressive .NET 2016</a>. I have to say that I am very excited that I will be part of such a well known conference in the city of London. I will have the opportunity to share my thoughts and ideas on such a hot topic like the isomorphic JavaScript applications. I strongly believe that this kind of applications will become more and more popular as they provide tremendous flexibility and can improve initial performance quite a lot. I hope that my talk will be enjoyed by the .NET community as it touches a very innovative subject that opens new possibilities for web application development.</p>
+<h2 id="Hope-to-meet-you-in-person-in-the-fantastic-Progressive-NET-2016"><a href="#Hope-to-meet-you-in-person-in-the-fantastic-Progressive-NET-2016" class="headerlink" title="Hope to meet you in person in the fantastic Progressive .NET 2016"></a>Hope to meet you in person in the fantastic <a href="https://skillsmatter.com/conferences/7235-progressive-dot-net-tutorials-2016" target="_blank" rel="external">Progressive .NET 2016</a></h2>
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/public-speaker/">public speaker</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/15/ASP-NET-5-and-Webpack-part-1/" data-tooltip="ASP.NET 5 and Webpack part 1">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2016 Babis Karypidis. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/15/ASP-NET-5-and-Webpack-part-1/" data-tooltip="ASP.NET 5 and Webpack part 1">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+        
+            <h4 id="about-card-name">Babis Karypidis</h4>
+        
+            <h5 id="about-card-bio"><p>Hi, I am Babis Karypidis, a Greek software engineer who tries to fit other activities, except development, in his life.</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Freelance Software Engineer focusing on .NET, Azure and React.js</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Brussels, Belgium
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('https://globalazurereport.blob.core.windows.net/personalblog/web_development_top.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/scrip-rjanlllosg30d03qrddpwrs6wqf4k3v0bbo68hiifuvthyhqfefx2htcagu0.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/';
+                 
+                    this.page.identifier = '2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/';
+                                  
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'xabikos';
+                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+</html>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xabikostest.github.io/"/>
-  <updated>2016-05-08T18:40:11.361Z</updated>
+  <updated>2016-06-12T22:22:12.839Z</updated>
   <id>http://xabikostest.github.io/</id>
   
   <author>
@@ -14,6 +14,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Talking about isomorphic JavaScript applications in  Progressive .NET 2016</title>
+    <link href="http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/"/>
+    <id>http://xabikostest.github.io/2016/06/12/Talking-about-isomorphic-JavaScript-applications-in-Progressive-NET-2016/</id>
+    <published>2016-06-12T21:26:45.000Z</published>
+    <updated>2016-06-12T22:22:12.839Z</updated>
+    
+    <content type="html">&lt;h4 id=&quot;Presenting-in-the-conference&quot;&gt;&lt;a href=&quot;#Presenting-in-the-conference&quot; class=&quot;headerlink&quot; title=&quot;Presenting in the conference&quot;&gt;&lt;/a&gt;Presenting in the conference&lt;/h4&gt;&lt;p&gt;During the past couple of years I was actively involved in several meetups and local events mostly as attendee but some times as speaker or organizer as well. In general I think this is one of the best ways to get to know really smart people and find out about the trends in the extremely fast moving software development world.&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;br&gt;When I discover a really innovative subject I always want to know everything about it, and presenting this subject in front of other people is always a good reason to do it. As in the last couple of months I am working mostly as a &lt;a href=&quot;http://facebook.github.io/react/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Reactjs&lt;/a&gt; developer and my interest for Microsoft’s new platform, &lt;a href=&quot;https://www.microsoft.com/net&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;.NET core&lt;/a&gt; is high I am very interested on how we can combine these in order to get the best of the two worlds. This is going the subject of my presentation in the upcoming &lt;a href=&quot;https://skillsmatter.com/conferences/7235-progressive-dot-net-tutorials-2016&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Progressive .NET 2016&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&quot;Presentation-details&quot;&gt;&lt;a href=&quot;#Presentation-details&quot; class=&quot;headerlink&quot; title=&quot;Presentation details&quot;&gt;&lt;/a&gt;Presentation details&lt;/h4&gt;&lt;p&gt;During the presentation I will try initially, to explain what is an &lt;a href=&quot;http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;isomorphic JavaScrip application&lt;/a&gt; and how we can achieve this in the .NET ecosystem. For that reason two corresponding libraries are going to be presented. Initially the mature and well known &lt;a href=&quot;http://reactjs.net/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Reactjs .NET&lt;/a&gt;. This library offers some unique capabilities and allows us to render our &lt;a href=&quot;http://facebook.github.io/react/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;React.js&lt;/a&gt; components on the server and return a fully rendered page to the browser. The library is used in many project but it comes with some limitations like the lack of supporting server side routing or use it for another framework.&lt;/p&gt;
+&lt;p&gt;Microsoft on the other side, and most specifically the &lt;a href=&quot;http://knockoutjs.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Knockout&lt;/a&gt; guy &lt;a href=&quot;http://blog.stevensanderson.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Steven Sanderson&lt;/a&gt;, is developing an open source project in Github that is called &lt;a href=&quot;https://github.com/aspnet/JavaScriptServices&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;JavaScript services&lt;/a&gt;. This library has as a goal to execute client side application of various frameworks and libraries on the server side. The project is quite promissing and currently you can use it with &lt;a href=&quot;http://facebook.github.io/react/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Reactjs&lt;/a&gt;, &lt;a href=&quot;https://angular.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Angular2&lt;/a&gt;, &lt;a href=&quot;http://knockoutjs.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Knockout&lt;/a&gt; and more frameworkds will follow as the core project is framework agnostic.&lt;/p&gt;
+&lt;h4 id=&quot;Where-this-will-happen&quot;&gt;&lt;a href=&quot;#Where-this-will-happen&quot; class=&quot;headerlink&quot; title=&quot;Where this will happen&quot;&gt;&lt;/a&gt;Where this will happen&lt;/h4&gt;&lt;p&gt;My presentation will be in the context of &lt;a href=&quot;https://skillsmatter.com/conferences/7235-progressive-dot-net-tutorials-2016&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Progressive .NET 2016&lt;/a&gt;. I have to say that I am very excited that I will be part of such a well known conference in the city of London. I will have the opportunity to share my thoughts and ideas on such a hot topic like the isomorphic JavaScript applications. I strongly believe that this kind of applications will become more and more popular as they provide tremendous flexibility and can improve initial performance quite a lot. I hope that my talk will be enjoyed by the .NET community as it touches a very innovative subject that opens new possibilities for web application development.&lt;/p&gt;
+&lt;h2 id=&quot;Hope-to-meet-you-in-person-in-the-fantastic-Progressive-NET-2016&quot;&gt;&lt;a href=&quot;#Hope-to-meet-you-in-person-in-the-fantastic-Progressive-NET-2016&quot; class=&quot;headerlink&quot; title=&quot;Hope to meet you in person in the fantastic Progressive .NET 2016&quot;&gt;&lt;/a&gt;Hope to meet you in person in the fantastic &lt;a href=&quot;https://skillsmatter.com/conferences/7235-progressive-dot-net-tutorials-2016&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Progressive .NET 2016&lt;/a&gt;&lt;/h2&gt;</content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;Presenting-in-the-conference&quot;&gt;&lt;a href=&quot;#Presenting-in-the-conference&quot; class=&quot;headerlink&quot; title=&quot;Presenting in the conference&quot;&gt;&lt;/a&gt;Presenting in the conference&lt;/h4&gt;&lt;p&gt;During the past couple of years I was actively involved in several meetups and local events mostly as attendee but some times as speaker or organizer as well. In general I think this is one of the best ways to get to know really smart people and find out about the trends in the extremely fast moving software development world.&lt;br&gt;
+    
+    </summary>
+    
+      <category term="conferences" scheme="http://xabikostest.github.io/categories/conferences/"/>
+    
+      <category term="public events" scheme="http://xabikostest.github.io/categories/conferences/public-events/"/>
+    
+    
+      <category term="public speaker" scheme="http://xabikostest.github.io/tags/public-speaker/"/>
+    
+  </entry>
   
   <entry>
     <title>ASP.NET 5 and Webpack part 1</title>
