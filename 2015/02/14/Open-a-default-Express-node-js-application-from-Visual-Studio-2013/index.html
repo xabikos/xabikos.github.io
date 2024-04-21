@@ -3,7 +3,7 @@
 <html lang="en">
     
 <head>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Web development with asp.net and React.js">
     <title>Open a default Express node.js application from Visual Studio 2013 - Web development with asp.net and React.js</title>
@@ -13,48 +13,60 @@
     
     
     
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+        
+            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+        
     
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Babis Karypidis","sameAs":["https://github.com/xabikos","http://stackoverflow.com/users/2326486/xabikos","https://twitter.com/xabikos","https://www.linkedin.com/in/charalamposkarypidis/","mailto:xaralaboskaripidis@gmail.com"],"image":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5"},"articleBody":"node.js and Visual Studionode.js is a very popular platform which allows having Javacript executed on the server. This is what everybody reads when navigating on the official site:Node.js® is a platform built on Chrome’s JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I&#x2F;O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.\n \nDuring the last couple of years Microsoft has put a lot of effort to provide a nice experience when we want to develop a node.js application by using Visual Studio. This comes of course in conjunction of supporting node.js hosting on the company’s cloud platform Microsoft Azure. We are able to develop any node.js application in Visual Studio because of the Node.js Tools for Visual Studio awesome open source project. This is an extension that is completely free and anyone who is interested could install it on Visual Studio. After installing the extension we can create various node.js applications as we can see in the following picture.\n\n\nOpen an existing node applicationThe most interesting part according to my opinion is the first one, From existing Node.js code, as it gives us the opportunity to open an existing node application that was created from a different IDE and maybe on a different platform (Linux, OSX). This option gives us tremendous freedom to start contributing in a node.js project that some members of the team use different IDE and are on different platforms and we can still use Visual Studio without problem. Let me demonstrate how this works and also mention a fix to a minor problem.\nCreate a default Express applicationThe first step is to create the default Express application. I am not going to explain the prerequisites of doing this as here you can find very detailed instructions. After we have installed all the required dependencies and we have created a folder somewhere in our system, we should open a command window to the newly created folder and just hit:\nCreate express applicationcmdexpress firstExpressApplication\nand after this is finished we have to move to the newly created folder and install the referenced node packages. This can be done my hitting:\nMove to the correct directorycmdcd firstExpressApplication\nnpm install\nAt this point we have a very simple Express application which we can launch by typing in the command window\nStart express applicationcmdset DEBUG=firstExpressApplication &amp; node .\\bin\\www\nAfter doing this just open a browser tab and navigate to the url: http://localhost:3000 and you should see the default express application running.\nOpen the Express application from Visual StudioNow is the most interesting part where we can open this application from visual studio further change it. After giving a name in the window that is shown in the picture above we press next and we are presented with a window like the one following where we should choose the folder that contains the application’s code.\n\n\nAfter clicking next a window like the following is shown to us where we can choose which file should be executed when F5 is pressed.\n\n\nHere is the small problem as it doesn’t give us the option to choose the bin\\www file which contains the initialization logic. We have to manually change this after the Visual Studio project creation is finished. We are leaving the app.js file as selected and click next. The coming window is a great thought as it gives the flexibility of storing the Visual Studio project file in a different place than the original Express application. This means that we could even not add this file to source control and definitely it is not going to bother other people in the team that they don’t use Visual Studio.\n\n\nFixing the problem of initial fileWhen the importing of the project is finished we can press F5 in order to achieve the same result as previously where we start the project from command line. But if we do this we will experience an error. A normal debugging session is starting and a command window with debugger details is shown but after a couple of seconds the window is disappeared and no application is present. This is due the starting file selection we made earlier. In order to fix this issue we need to edit the project and change the corresponding setting manually. We have to spot the StartupFile setting that is set in app.js and change it to bin\\www. After saving the changes, reload the project and pressing F5 everything should work as expected.\nYou can find more details for node.js tools for visual studio in the codeplex project\n","dateCreated":"2015-02-14T13:30:00+02:00","dateModified":"2024-04-20T18:01:58+03:00","datePublished":"2015-02-14T13:30:00+02:00","description":"node.js and Visual Studionode.js is a very popular platform which allows having Javacript executed on the server. This is what everybody reads when navigating on the official site:Node.js® is a platform built on Chrome’s JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I&#x2F;O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.","headline":"Open a default Express node.js application from Visual Studio 2013","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/"},"publisher":{"@type":"Organization","name":"Babis Karypidis","sameAs":["https://github.com/xabikos","http://stackoverflow.com/users/2326486/xabikos","https://twitter.com/xabikos","https://www.linkedin.com/in/charalamposkarypidis/","mailto:xaralaboskaripidis@gmail.com"],"image":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5"}},"url":"https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/","keywords":"Express, Visual Studio"}</script>
     <meta name="description" content="node.js and Visual Studionode.js is a very popular platform which allows having Javacript executed on the server. This is what everybody reads when navigating on the official site:Node.js® is a platfo">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Open a default Express node.js application from Visual Studio 2013">
-<meta property="og:url" content="http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/index.html">
+<meta property="og:url" content="https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/index.html">
 <meta property="og:site_name" content="Web development with asp.net and React.js">
 <meta property="og:description" content="node.js and Visual Studionode.js is a very popular platform which allows having Javacript executed on the server. This is what everybody reads when navigating on the official site:Node.js® is a platfo">
-<meta property="og:image" content="http://xabikostest.github.io/newNodeProject.jpg">
-<meta property="og:image" content="http://xabikostest.github.io/selectforlder.jpg">
-<meta property="og:image" content="http://xabikostest.github.io/selectstartfile.jpg">
-<meta property="og:image" content="http://xabikostest.github.io/selectprojectlocation.jpg">
-<meta property="og:updated_time" content="2016-05-08T18:40:11.307Z">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/newNodeProject.jpg">
+<meta property="og:image" content="https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/selectforlder.jpg">
+<meta property="og:image" content="https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/selectstartfile.jpg">
+<meta property="og:image" content="https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/selectprojectlocation.jpg">
+<meta property="article:published_time" content="2015-02-14T11:30:00.000Z">
+<meta property="article:modified_time" content="2024-04-20T15:01:58.574Z">
+<meta property="article:author" content="Babis Karypidis">
+<meta property="article:tag" content="Express">
+<meta property="article:tag" content="Visual Studio">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Open a default Express node.js application from Visual Studio 2013">
-<meta name="twitter:description" content="node.js and Visual Studionode.js is a very popular platform which allows having Javacript executed on the server. This is what everybody reads when navigating on the official site:Node.js® is a platfo">
+<meta name="twitter:image" content="https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/newNodeProject.jpg">
 <meta name="twitter:creator" content="@xabikos">
     
     
         
     
     
-        <meta property="og:image" content="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
+        <meta property="og:image" content="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
     
     
     
     
     <!--STYLES-->
-    <link rel="stylesheet" href="/assets/css/style-quwccsthbllipo6252snb2tfkddvrsp1eczkytpz3vmxpsb6nwodixemlkux.min.css" type="text/css">
+    
+<link rel="stylesheet" href="/assets/css/style-l75e9pkst9f5hq5irx80zjnvasnb2rnqxprrbw9gnxafornapyufpp3d5poq.min.css">
+
     <!--STYLES END-->
     
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-56484404-1']);
-        _gaq.push(['_trackPageview']);
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56484404-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-56484404-1');
     </script>
 
+
+    
+
+    
+        
     
 </head>
 
@@ -67,18 +79,27 @@
         
     
 
-<header id="header" data-behavior="4">
+<header id="header" data-behavior="5">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
-    <h1 class="header-title">
-        <a class="header-title-link" href="/ ">Web development with asp.net and React.js</a>
-    </h1>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Web development with asp.net and React.js
+        </a>
+    </div>
     
         
-            <a  class="header-right-picture "
-                href="/#about">
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
         
         
-            <img class="header-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90"/>
+            <img class="header-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90" alt="Author&#39;s picture"/>
         
         </a>
     
@@ -89,131 +110,235 @@
 
     
 
-<nav id="sidebar" data-behavior="4">
-    
-        <div class="sidebar-profile">
-            <a href="/#about">
-                    <img class="sidebar-profile-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
-            </a>
-            <span class="sidebar-profile-name">Babis Karypidis</span>
-        </div>
-    
-    
-        <ul class="sidebar-buttons">
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/ "
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
-                    <span class="sidebar-button-desc">Home</span>
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110" alt="Author&#39;s picture"/>
                 </a>
-        </li>
+                <h4 class="sidebar-profile-name">Babis Karypidis</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/all-categories"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
-                    <span class="sidebar-button-desc">Categories</span>
-                </a>
-        </li>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/all-tags"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
-                    <span class="sidebar-button-desc">Tags</span>
-                </a>
-        </li>
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="Archives"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link open-algolia-search"
+                            href="#search"
+                            
+                            rel="noopener"
+                            title="Search"
+                        >
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-    </ul>
-    
-        <ul class="sidebar-buttons">
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users/2326486/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://twitter.com/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Twitter"
+                        >
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/in/charalamposkarypidis/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:xaralaboskaripidis@gmail.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Mail"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://github.com/xabikos" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
-                    <span class="sidebar-button-desc">GitHub</span>
-                </a>
-        </li>
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://twitter.com/xabikos" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
-                    <span class="sidebar-button-desc">Twitter</span>
-                </a>
-        </li>
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://www.linkedin.com/in/charalamposkarypidis/" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
-                    <span class="sidebar-button-desc">LinkedIn</span>
-                </a>
-        </li>
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="mailto:xaralaboskaripidis@gmail.com" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
-                    <span class="sidebar-button-desc">Mail</span>
-                </a>
-        </li>
-        
-    </ul>
-    
-        <ul class="sidebar-buttons">
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/atom.xml"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
-                    <span class="sidebar-button-desc">RSS</span>
-                </a>
-        </li>
-        
-    </ul>
-    
+    </div>
 </nav>
 
             
-            <div id="main" data-behavior="4"
+            <div id="main" data-behavior="5"
                  class="
                         hasCoverMetaIn
                         ">
                 
-<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+<article class="post">
     
     
         <div class="post-header main-content-wrap text-left">
     
-        <h1 class="post-title" itemprop="headline">
+        <h1 class="post-title">
             Open a default Express node.js application from Visual Studio 2013
         </h1>
     
-    <div class="post-meta">
-    <time itemprop="datePublished" content="Sat Feb 14 2015 13:30:00 GMT+0100">
+    
+        <div class="post-meta">
+    <time datetime="2015-02-14T13:30:00+02:00">
 	
 		    Feb 14, 2015
     	
@@ -226,24 +351,42 @@
 
     
 </div>
-</div>
+
     
-    <div class="post-content markdown" itemprop="articleBody">
+</div>
+
+    
+    <div class="post-content markdown">
         <div class="main-content-wrap">
-            <h3 id="node-js-and-Visual-Studio"><a href="#node-js-and-Visual-Studio" class="headerlink" title="node.js and Visual Studio"></a>node.js and Visual Studio</h3><p><a href="http://nodejs.org/" target="_blank" rel="external">node.js</a> is a very popular platform which allows having Javacript executed on the server. This is what everybody reads when navigating on the <a href="http://nodejs.org/" target="_blank" rel="external">official site</a>:<br><em>Node.js® is a platform built on Chrome’s JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.</em><br><a id="more"></a><br>During the last couple of years Microsoft has put a lot of effort to provide a nice experience when we want to develop a node.js application by using Visual Studio. This comes of course in conjunction of supporting node.js hosting on the company’s cloud platform <a href="http://azure.microsoft.com/en-us/develop/nodejs/" target="_blank" rel="external">Microsoft Azure</a>. We are able to develop any node.js application in Visual Studio because of the <a href="https://nodejstools.codeplex.com/" target="_blank" rel="external">Node.js Tools for Visual Studio</a> awesome open source project. This is an extension that is completely free and anyone who is interested could install it on Visual Studio. After installing the extension we can create various node.js applications as we can see in the following picture.</p>
-<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="newNodeProject.jpg" title="new node project" data-fancybox-group="vsnode"><img class="fig-img" src="newNodeProject.jpg" alt="new node project"></a></div><div style="clear:both;"></div>
+            <h3 id="node-js-and-Visual-Studio"><a href="#node-js-and-Visual-Studio" class="headerlink" title="node.js and Visual Studio"></a>node.js and Visual Studio</h3><p><a target="_blank" rel="noopener" href="http://nodejs.org/">node.js</a> is a very popular platform which allows having Javacript executed on the server. This is what everybody reads when navigating on the <a target="_blank" rel="noopener" href="http://nodejs.org/">official site</a>:<br><em>Node.js® is a platform built on Chrome’s JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I&#x2F;O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.</em></p>
+<span id="more"></span> 
+<p>During the last couple of years Microsoft has put a lot of effort to provide a nice experience when we want to develop a node.js application by using Visual Studio. This comes of course in conjunction of supporting node.js hosting on the company’s cloud platform <a target="_blank" rel="noopener" href="http://azure.microsoft.com/en-us/develop/nodejs/">Microsoft Azure</a>. We are able to develop any node.js application in Visual Studio because of the <a target="_blank" rel="noopener" href="https://nodejstools.codeplex.com/">Node.js Tools for Visual Studio</a> awesome open source project. This is an extension that is completely free and anyone who is interested could install it on Visual Studio. After installing the extension we can create various node.js applications as we can see in the following picture.</p>
+<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="newNodeProject.jpg" title="new node project" data-caption="new node project" data-fancybox="vsnode"><img class="fig-img" src="newNodeProject.jpg" alt="new node project"></a></div><div style="clear:both;"></div>
+
 <h4 id="Open-an-existing-node-application"><a href="#Open-an-existing-node-application" class="headerlink" title="Open an existing node application"></a>Open an existing node application</h4><p>The most interesting part according to my opinion is the first one, <strong>From existing Node.js code,</strong> as it gives us the opportunity to open an existing node application that was created from a different IDE and maybe on a different platform (Linux, OSX). This option gives us tremendous freedom to start contributing in a node.js project that some members of the team use different IDE and are on different platforms and we can still use Visual Studio without problem. Let me demonstrate how this works and also mention a fix to a minor problem.</p>
-<h4 id="Create-a-default-Express-application"><a href="#Create-a-default-Express-application" class="headerlink" title="Create a default Express application"></a>Create a default Express application</h4><p>The first step is to create the default Express application. I am not going to explain the prerequisites of doing this as <a href="http://expressjs.com/starter/generator.html" target="_blank" rel="external">here</a> you can find very detailed instructions. After we have installed all the required dependencies and we have created a folder somewhere in our system, we should open a command window to the newly created folder and just hit:<br><figure class="codeblock codeblock--tabbed"><figcaption><span>Create express application</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><figure class="highlight cmd" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">express firstExpressApplication</span><br></pre></td></tr></tbody></table></figure></div></figure><br>and after this is finished we have to move to the newly created folder and install the referenced node packages. This can be done my hitting:<br><figure class="codeblock codeblock--tabbed"><figcaption><span>Move to the correct directory</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><figure class="highlight cmd" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> firstExpressApplication</span><br><span class="line">npm install</span><br></pre></td></tr></tbody></table></figure></div></figure><br>At this point we have a very simple Express application which we can launch by typing in the command window<br><figure class="codeblock codeblock--tabbed"><figcaption><span>Start express application</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><figure class="highlight cmd" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> DEBUG=firstExpressApplication &amp; node .\bin\www</span><br></pre></td></tr></tbody></table></figure></div></figure><br>After doing this just open a browser tab and navigate to the url: <a href="http://localhost:3000" target="_blank" rel="external">http://localhost:3000</a> and you should see the default express application running.</p>
+<h4 id="Create-a-default-Express-application"><a href="#Create-a-default-Express-application" class="headerlink" title="Create a default Express application"></a>Create a default Express application</h4><p>The first step is to create the default Express application. I am not going to explain the prerequisites of doing this as <a target="_blank" rel="noopener" href="http://expressjs.com/starter/generator.html">here</a> you can find very detailed instructions. After we have installed all the required dependencies and we have created a folder somewhere in our system, we should open a command window to the newly created folder and just hit:</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Create express application</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>express firstExpressApplication</code></pre></div></figure>
+<p>and after this is finished we have to move to the newly created folder and install the referenced node packages. This can be done my hitting:</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Move to the correct directory</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>cd firstExpressApplication
+npm install</code></pre></div></figure>
+<p>At this point we have a very simple Express application which we can launch by typing in the command window</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Start express application</span><ul class="tabs"><li class="tab active">cmd</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>set DEBUG=firstExpressApplication &amp; node .\bin\www</code></pre></div></figure>
+<p>After doing this just open a browser tab and navigate to the url: <a target="_blank" rel="noopener" href="http://localhost:3000/">http://localhost:3000</a> and you should see the default express application running.</p>
 <h4 id="Open-the-Express-application-from-Visual-Studio"><a href="#Open-the-Express-application-from-Visual-Studio" class="headerlink" title="Open the Express application from Visual Studio"></a>Open the Express application from Visual Studio</h4><p>Now is the most interesting part where we can open this application from visual studio further change it. After giving a name in the window that is shown in the picture above we press next and we are presented with a window like the one following where we should choose the folder that contains the application’s code.</p>
-<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="selectforlder.jpg" title="select folder" data-fancybox-group="vsnode"><img class="fig-img" src="selectforlder.jpg" alt="select folder"></a></div><div style="clear:both;"></div>
+<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="selectforlder.jpg" title="select folder" data-caption="select folder" data-fancybox="vsnode"><img class="fig-img" src="selectforlder.jpg" alt="select folder"></a></div><div style="clear:both;"></div>
+
 <p>After clicking next a window like the following is shown to us where we can choose which file should be executed when F5 is pressed.</p>
-<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="selectstartfile.jpg" title="select start file" data-fancybox-group="vsnode"><img class="fig-img" src="selectstartfile.jpg" alt="select start file"></a></div><div style="clear:both;"></div>
+<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="selectstartfile.jpg" title="select start file" data-caption="select start file" data-fancybox="vsnode"><img class="fig-img" src="selectstartfile.jpg" alt="select start file"></a></div><div style="clear:both;"></div>
+
 <p>Here is the small problem as it doesn’t give us the option to choose the bin\www file which contains the initialization logic. We have to manually change this after the Visual Studio project creation is finished. We are leaving the app.js file as selected and click next. The coming window is a great thought as it gives the flexibility of storing the Visual Studio project file in a different place than the original Express application. This means that we could even not add this file to source control and definitely it is not going to bother other people in the team that they don’t use Visual Studio.</p>
-<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="selectprojectlocation.jpg" title="select project location" data-fancybox-group="vsnode"><img class="fig-img" src="selectprojectlocation.jpg" alt="select project location"></a></div><div style="clear:both;"></div>
+<div class="figure nocaption fig-100" style="width:;"><a class="fancybox" href="selectprojectlocation.jpg" title="select project location" data-caption="select project location" data-fancybox="vsnode"><img class="fig-img" src="selectprojectlocation.jpg" alt="select project location"></a></div><div style="clear:both;"></div>
+
 <h4 id="Fixing-the-problem-of-initial-file"><a href="#Fixing-the-problem-of-initial-file" class="headerlink" title="Fixing the problem of initial file"></a>Fixing the problem of initial file</h4><p>When the importing of the project is finished we can press F5 in order to achieve the same result as previously where we start the project from command line. But if we do this we will experience an error. A normal debugging session is starting and a command window with debugger details is shown but after a couple of seconds the window is disappeared and no application is present. This is due the starting file selection we made earlier. In order to fix this issue we need to edit the project and change the corresponding setting manually. We have to spot the <strong>StartupFile</strong> setting that is set in <strong>app.js</strong> and change it to <strong>bin\www</strong>. After saving the changes, reload the project and pressing F5 everything should work as expected.</p>
-<p>You can find more details for node.js tools for visual studio in the <a href="https://nodejstools.codeplex.com/" target="_blank" rel="external">codeplex project</a></p>
+<p>You can find more details for node.js tools for visual studio in the <a target="_blank" rel="noopener" href="https://nodejstools.codeplex.com/">codeplex project</a></p>
 
             
+
+
         </div>
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
@@ -251,64 +394,99 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/Express/">Express</a> <a class="tag tag--primary tag--small t-link" href="/tags/Visual-Studio/">Visual Studio</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/Express/" rel="tag">Express</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Visual-Studio/" rel="tag">Visual Studio</a>
 
             </div>
         
-        <div class="post-actions-wrap">
+        
+            <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/03/18/Using-Reactjs-net-in-Web-Forms/"  data-tooltip="Using Reactjs.net in Web Forms">
-                
-                    <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2015/03/18/Using-Reactjs-net-in-Web-Forms/"
+                    data-tooltip="Using Reactjs.net in Web Forms"
+                    aria-label="PREVIOUS: Using Reactjs.net in Web Forms"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/01/26/Create-an-OWIN-middleware-to-trigger-a-permanent-redirect/" data-tooltip="ASP.NET - Create an OWIN middleware to trigger a permanent redirect">
-                
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
-                    <i class="fa fa-angle-right"></i>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2015/01/26/Create-an-OWIN-middleware-to-trigger-a-permanent-redirect/"
+                    data-tooltip="ASP.NET - Create an OWIN middleware to trigger a permanent redirect"
+                    aria-label="NEXT: ASP.NET - Create an OWIN middleware to trigger a permanent redirect"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
             </li>
         </ul>
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
-                <i class="fa fa-share-alt"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-google-plus"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-facebook-official"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-twitter"></i>
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
         
-            <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
-                    <i class="fa fa-comment-o"></i>
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
-                <i class="fa fa-list"></i>
+                <i class="fa fa-list" aria-hidden="true"></i>
             </a>
         </li>
     </ul>
@@ -316,9 +494,10 @@
 
 
         
+        
             
                 <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
             
         
@@ -329,67 +508,101 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2016 Babis Karypidis. All Rights Reserved.
+        Copyrights &copy; 2024 Babis Karypidis. All Rights Reserved.
     </span>
 </footer>
 
             </div>
             
-                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
                     <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/03/18/Using-Reactjs-net-in-Web-Forms/"  data-tooltip="Using Reactjs.net in Web Forms">
-                
-                    <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2015/03/18/Using-Reactjs-net-in-Web-Forms/"
+                    data-tooltip="Using Reactjs.net in Web Forms"
+                    aria-label="PREVIOUS: Using Reactjs.net in Web Forms"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/01/26/Create-an-OWIN-middleware-to-trigger-a-permanent-redirect/" data-tooltip="ASP.NET - Create an OWIN middleware to trigger a permanent redirect">
-                
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
-                    <i class="fa fa-angle-right"></i>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2015/01/26/Create-an-OWIN-middleware-to-trigger-a-permanent-redirect/"
+                    data-tooltip="ASP.NET - Create an OWIN middleware to trigger a permanent redirect"
+                    aria-label="NEXT: ASP.NET - Create an OWIN middleware to trigger a permanent redirect"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
             </li>
         </ul>
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
-                <i class="fa fa-share-alt"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-google-plus"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-facebook-official"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-twitter"></i>
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
         
-            <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
-                    <i class="fa fa-comment-o"></i>
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
-                <i class="fa fa-list"></i>
+                <i class="fa fa-list" aria-hidden="true"></i>
             </a>
         </li>
     </ul>
@@ -397,26 +610,41 @@
 
 
                 </div>
-                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
-    <ul class="share-options">
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
-            </a>
-        </li>
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
-            </a>
-        </li>
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/">
-                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
-            </a>
-        </li>
-    </ul>
-</div>
-<div id="share-options-mask" class="share-options-mask"></div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
             
         </div>
         
@@ -427,60 +655,65 @@
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
-            <i class="fa fa-remove"></i>
+            <i class="fa fa-times"></i>
         </div>
         
-            <img id="about-card-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110" alt="Author&#39;s picture"/>
         
             <h4 id="about-card-name">Babis Karypidis</h4>
         
-            <h5 id="about-card-bio"><p>Hi, I am Babis Karypidis, a Greek software engineer who tries to fit other activities, except development, in his life.</p>
-</h5>
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
         
         
-            <h5 id="about-card-job">
+            <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>Freelance Software Engineer focusing on .NET, Azure and React.js</p>
+                <p>author.job</p>
 
-            </h5>
+            </div>
         
         
-            <h5 id="about-card-location">
-                <i class="fa fa-map-marker"></i>
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
                 <br/>
-                Brussels, Belgium
-            </h5>
+                Thessaloniki, Greece
+            </div>
         
     </div>
 </div>
 
         
-<div id="cover" style="background-image:url('https://globalazurereport.blob.core.windows.net/personalblog/web_development_top.jpg');"></div>
-    </body>
-    <!--SCRIPTS-->
-<script src="/assets/js/scrip-rjanlllosg30d03qrddpwrs6wqf4k3v0bbo68hiifuvthyhqfefx2htcagu0.min.js" type="text/javascript"></script>
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-9xh1uuvzj9epxjrwi1ftdf05eawvprhb9onoygse3kk2ycl8ua9fcrxverfe.min.js"></script>
+
 <!--SCRIPTS END-->
+
 
     
         <script>
-             var disqus_config = function () {
-                 this.page.url = 'http://xabikostest.github.io/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/';
-                 
-                    this.page.identifier = '2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/';
-                                  
-             };
-            (function() {
-                var d = document, s = d.createElement('script');
-                var disqus_shortname = 'xabikos';
-                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          var disqus_config = function() {
+            this.page.url = 'https://xabikos.com/2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/';
+              
+            this.page.identifier = '2015/02/14/Open-a-default-Express-node-js-application-from-Visual-Studio-2013/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'xabikos';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
 
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
-            })();
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
         </script>
     
 
 
 
+
+    </body>
 </html>

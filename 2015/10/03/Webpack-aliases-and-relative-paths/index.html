@@ -3,7 +3,7 @@
 <html lang="en">
     
 <head>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Web development with asp.net and React.js">
     <title>Webpack aliases and relative paths - Web development with asp.net and React.js</title>
@@ -13,45 +13,56 @@
     
     
     
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+        
+            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+        
     
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Babis Karypidis","sameAs":["https://github.com/xabikos","http://stackoverflow.com/users/2326486/xabikos","https://twitter.com/xabikos","https://www.linkedin.com/in/charalamposkarypidis/","mailto:xaralaboskaripidis@gmail.com"],"image":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5"},"articleBody":"Why WebpackWebpack is one of the solutions that are available out there and solves JavaScript reference modules problem. It’s also my favourite tool to use it in the Reactjs project I am involved lately. Webpack provides wider functionality except just referencing external JavaScript code but this is not the scope of this blog spot. In this post I will try to concentrate in a feature of the tool that most examples don’t use it and it’s very important according to my opinion. This is the resolve section of Webpack configuration and how it can help us in day to day development.\n\nAn example without using aliasesAs mentioned earlier I am involved lately in multiple projects related to Reactjs so the example uses this library. What is described on the other hand could easily applied in frameworks like Angular or just pure JavaScript code which is bundled through Webpack.\nLet’s say that we have a really simple components hierarchy that one uses the other. A view of this example could be this one:\nFolder structure&lt;App&gt;\n  &lt;Utility&gt;\n    &lt;Home&gt;\n      &lt;Utility&gt;\n      &lt;Service&gt;\nThat means we have a Utility component (you could consider it a separate file) that is used by both App and Home component and on top of this Home component uses also an external service. This is reflected in the file system as:\n\n\nEven in new ES6 module system when we need a reference in a piece of code in our project that is not a node module, we need to reference it by relative path to the file we need it. So to make it more concrete the import code for App component looks like this:\nImport Utility modulejsimport Home from './home.jsx';\nimport Utility from './common/utility.jsx';\n\nAnd to make the issue with relative paths more obvious lets see the import statements of Home component:\nImport modules relative pathsjsimport Utility from './common/utility.jsx';\nimport TextService from '../services/textService.js';\n\nFrom the example above we should realise that each time we need to use a piece of code in our application, we need to now in which exact folder we are and then start calculating the relative path to this file. This is something that really annoys me and is not only that. Just think the case that the project evolves and the utility file is referenced in multiple places. And then we need to either rename the file or more probably reorganise the folder structure and choose a different one. We have to find all the files that reference this file and make the appropriate changes.\nWebpack Resolve Alias solutionAs mention before Webpack has a section in it’s configuration (resolve section) that could solve this issue and it’s very powerful. We can declare aliases in many ways so we could not rely on relative paths but just reference our code as regular node modules.\nFirst let’s see what we need to add to the webpack.config file:\nWebpack alias configjsresolve: {\n  root: path.resolve(__dirname),\n  alias: {\n    app: 'components/app',\n    home: 'components/home',\n    utility: 'components/common/utility',\n    textService: 'services/textService'\n  },\n  extensions: ['', '.js', '.jsx']\n},\n\nIt’s important to configure the root with an absolute path so the path in the alias section is becoming relative to where the webpack.config file resides. Of course in a real project where we have more files we should probably extract this object to a separate file and import it in webpack.config file. After that is our responsibility to have unique names in aliases something that probably was easier before, due to folder names.\nBut now is interesting to see how the import statements of components look like. Let’s begin with App component as before:\nImport module through aliasjsimport Home from 'home';\nimport Utility from 'utility';\n\nAnd let’s also see the Home component\nImport module through aliasjsimport Utility from 'utility';\nimport TextService from 'textService';\n\nBy now should be obvious that it’s easier to reference any file in our project. On top of that, where every file resides exists only in one place so if there is a need to either rename a file or restructure the folders the only place we have to touch is the aliases. In the configuration I also added the extensions option as it’s a way not to include the extension of the file in the path.\nYou can find the code for this example in the corresponding Github repository.\n","dateCreated":"2015-10-03T12:10:00+03:00","dateModified":"2024-04-20T18:01:58+03:00","datePublished":"2015-10-03T12:10:00+03:00","description":"Why WebpackWebpack is one of the solutions that are available out there and solves JavaScript reference modules problem. It’s also my favourite tool to use it in the Reactjs project I am involved lately. Webpack provides wider functionality except just referencing external JavaScript code but this is not the scope of this blog spot. In this post I will try to concentrate in a feature of the tool that most examples don’t use it and it’s very important according to my opinion. This is the resolve section of Webpack configuration and how it can help us in day to day development.","headline":"Webpack aliases and relative paths","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/"},"publisher":{"@type":"Organization","name":"Babis Karypidis","sameAs":["https://github.com/xabikos","http://stackoverflow.com/users/2326486/xabikos","https://twitter.com/xabikos","https://www.linkedin.com/in/charalamposkarypidis/","mailto:xaralaboskaripidis@gmail.com"],"image":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5"}},"url":"https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/","keywords":"webpack"}</script>
     <meta name="description" content="Why WebpackWebpack is one of the solutions that are available out there and solves JavaScript reference modules problem. It’s also my favourite tool to use it in the Reactjs project I am involved late">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Webpack aliases and relative paths">
-<meta property="og:url" content="http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/index.html">
+<meta property="og:url" content="https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/index.html">
 <meta property="og:site_name" content="Web development with asp.net and React.js">
 <meta property="og:description" content="Why WebpackWebpack is one of the solutions that are available out there and solves JavaScript reference modules problem. It’s also my favourite tool to use it in the Reactjs project I am involved late">
-<meta property="og:image" content="http://xabikostest.github.io/FolderStructure.png">
-<meta property="og:updated_time" content="2016-05-08T18:40:11.341Z">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/FolderStructure.png">
+<meta property="article:published_time" content="2015-10-03T09:10:00.000Z">
+<meta property="article:modified_time" content="2024-04-20T15:01:58.576Z">
+<meta property="article:author" content="Babis Karypidis">
+<meta property="article:tag" content="webpack">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Webpack aliases and relative paths">
-<meta name="twitter:description" content="Why WebpackWebpack is one of the solutions that are available out there and solves JavaScript reference modules problem. It’s also my favourite tool to use it in the Reactjs project I am involved late">
+<meta name="twitter:image" content="https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/FolderStructure.png">
 <meta name="twitter:creator" content="@xabikos">
     
     
         
     
     
-        <meta property="og:image" content="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
+        <meta property="og:image" content="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
     
     
     
     
     <!--STYLES-->
-    <link rel="stylesheet" href="/assets/css/style-quwccsthbllipo6252snb2tfkddvrsp1eczkytpz3vmxpsb6nwodixemlkux.min.css" type="text/css">
+    
+<link rel="stylesheet" href="/assets/css/style-l75e9pkst9f5hq5irx80zjnvasnb2rnqxprrbw9gnxafornapyufpp3d5poq.min.css">
+
     <!--STYLES END-->
     
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-56484404-1']);
-        _gaq.push(['_trackPageview']);
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56484404-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-56484404-1');
     </script>
 
+
+    
+
+    
+        
     
 </head>
 
@@ -64,18 +75,27 @@
         
     
 
-<header id="header" data-behavior="4">
+<header id="header" data-behavior="5">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
-    <h1 class="header-title">
-        <a class="header-title-link" href="/ ">Web development with asp.net and React.js</a>
-    </h1>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Web development with asp.net and React.js
+        </a>
+    </div>
     
         
-            <a  class="header-right-picture "
-                href="/#about">
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
         
         
-            <img class="header-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90"/>
+            <img class="header-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90" alt="Author&#39;s picture"/>
         
         </a>
     
@@ -86,131 +106,235 @@
 
     
 
-<nav id="sidebar" data-behavior="4">
-    
-        <div class="sidebar-profile">
-            <a href="/#about">
-                    <img class="sidebar-profile-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
-            </a>
-            <span class="sidebar-profile-name">Babis Karypidis</span>
-        </div>
-    
-    
-        <ul class="sidebar-buttons">
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/ "
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
-                    <span class="sidebar-button-desc">Home</span>
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110" alt="Author&#39;s picture"/>
                 </a>
-        </li>
+                <h4 class="sidebar-profile-name">Babis Karypidis</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/all-categories"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
-                    <span class="sidebar-button-desc">Categories</span>
-                </a>
-        </li>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/all-tags"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
-                    <span class="sidebar-button-desc">Tags</span>
-                </a>
-        </li>
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="Archives"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link open-algolia-search"
+                            href="#search"
+                            
+                            rel="noopener"
+                            title="Search"
+                        >
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-    </ul>
-    
-        <ul class="sidebar-buttons">
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users/2326486/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://twitter.com/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Twitter"
+                        >
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/in/charalamposkarypidis/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:xaralaboskaripidis@gmail.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Mail"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://github.com/xabikos" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
-                    <span class="sidebar-button-desc">GitHub</span>
-                </a>
-        </li>
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://twitter.com/xabikos" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
-                    <span class="sidebar-button-desc">Twitter</span>
-                </a>
-        </li>
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://www.linkedin.com/in/charalamposkarypidis/" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
-                    <span class="sidebar-button-desc">LinkedIn</span>
-                </a>
-        </li>
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="mailto:xaralaboskaripidis@gmail.com" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
-                    <span class="sidebar-button-desc">Mail</span>
-                </a>
-        </li>
-        
-    </ul>
-    
-        <ul class="sidebar-buttons">
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/atom.xml"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
-                    <span class="sidebar-button-desc">RSS</span>
-                </a>
-        </li>
-        
-    </ul>
-    
+    </div>
 </nav>
 
             
-            <div id="main" data-behavior="4"
+            <div id="main" data-behavior="5"
                  class="
                         hasCoverMetaIn
                         ">
                 
-<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+<article class="post">
     
     
         <div class="post-header main-content-wrap text-left">
     
-        <h1 class="post-title" itemprop="headline">
+        <h1 class="post-title">
             Webpack aliases and relative paths
         </h1>
     
-    <div class="post-meta">
-    <time itemprop="datePublished" content="Sat Oct 03 2015 12:10:00 GMT+0200">
+    
+        <div class="post-meta">
+    <time datetime="2015-10-03T12:10:00+03:00">
 	
 		    Oct 03, 2015
     	
@@ -223,31 +347,62 @@
 
     
 </div>
-</div>
+
     
-    <div class="post-content markdown" itemprop="articleBody">
+</div>
+
+    
+    <div class="post-content markdown">
         <div class="main-content-wrap">
-            <h4 id="Why-Webpack"><a href="#Why-Webpack" class="headerlink" title="Why Webpack"></a>Why Webpack</h4><p><a href="http://webpack.github.io" target="_blank" rel="external">Webpack</a> is one of the solutions that are available out there and solves JavaScript reference modules problem. It’s also my favourite tool to use it in the Reactjs project I am involved lately. Webpack provides wider functionality except just referencing external JavaScript code but this is not the scope of this blog spot. In this post I will try to concentrate in a feature of the tool that most examples don’t use it and it’s very important according to my opinion. This is the <a href="https://webpack.github.io/docs/configuration.html#resolve" target="_blank" rel="external">resolve</a> section of Webpack configuration and how it can help us in day to day development.<br><a id="more"></a></p>
+            <h4 id="Why-Webpack"><a href="#Why-Webpack" class="headerlink" title="Why Webpack"></a>Why Webpack</h4><p><a target="_blank" rel="noopener" href="http://webpack.github.io/">Webpack</a> is one of the solutions that are available out there and solves JavaScript reference modules problem. It’s also my favourite tool to use it in the Reactjs project I am involved lately. Webpack provides wider functionality except just referencing external JavaScript code but this is not the scope of this blog spot. In this post I will try to concentrate in a feature of the tool that most examples don’t use it and it’s very important according to my opinion. This is the <a target="_blank" rel="noopener" href="https://webpack.github.io/docs/configuration.html#resolve">resolve</a> section of Webpack configuration and how it can help us in day to day development.</p>
+<span id="more"></span>
 <h4 id="An-example-without-using-aliases"><a href="#An-example-without-using-aliases" class="headerlink" title="An example without using aliases"></a>An example without using aliases</h4><p>As mentioned earlier I am involved lately in multiple projects related to Reactjs so the example uses this library. What is described on the other hand could easily applied in frameworks like Angular or just pure JavaScript code which is bundled through Webpack.</p>
-<p>Let’s say that we have a really simple components hierarchy that one uses the other. A view of this example could be this one:<br><figure class="codeblock codeblock--tabbed"><figcaption><span>Folder structure</span><ul class="tabs"><li class="tab active"></li></ul></figcaption><div class="tabs-content"><figure class="highlight plain" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;App&gt;</span><br><span class="line">  &lt;Utility&gt;</span><br><span class="line">    &lt;Home&gt;</span><br><span class="line">      &lt;Utility&gt;</span><br><span class="line">      &lt;Service&gt;</span><br></pre></td></tr></tbody></table></figure></div></figure><br>That means we have a Utility component (you could consider it a separate file) that is used by both App and Home component and on top of this Home component uses also an external service. This is reflected in the file system as:</p>
-<div class="figure nocaption fig-33 center" style="width:;"><a class="fancybox" href="FolderStructure.png" title="folder structure" data-fancybox-group="webpack"><img class="fig-img" src="FolderStructure.png" alt="folder structure"></a></div><div style="clear:both;"></div>
+<p>Let’s say that we have a really simple components hierarchy that one uses the other. A view of this example could be this one:</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Folder structure</span><ul class="tabs"><li class="tab active"></li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>&lt;App&gt;
+  &lt;Utility&gt;
+    &lt;Home&gt;
+      &lt;Utility&gt;
+      &lt;Service&gt;</code></pre></div></figure>
+<p>That means we have a Utility component (you could consider it a separate file) that is used by both App and Home component and on top of this Home component uses also an external service. This is reflected in the file system as:</p>
+<div class="figure nocaption fig-33 center" style="width:;"><a class="fancybox" href="FolderStructure.png" title="folder structure" data-caption="folder structure" data-fancybox="webpack"><img class="fig-img" src="FolderStructure.png" alt="folder structure"></a></div><div style="clear:both;"></div>
+
 <p>Even in new ES6 module system when we need a reference in a piece of code in our project that is not a node module, we need to reference it by relative path to the file we need it. So to make it more concrete the import code for App component looks like this:</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>Import Utility module</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><figure class="highlight js" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Home <span class="keyword">from</span> <span class="string">'./home.jsx'</span>;</span><br><span class="line"><span class="keyword">import</span> Utility <span class="keyword">from</span> <span class="string">'./common/utility.jsx'</span>;</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Import Utility module</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>import Home from './home.jsx';
+import Utility from './common/utility.jsx';</code></pre></div></figure>
+
 <p>And to make the issue with relative paths more obvious lets see the import statements of Home component:</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>Import modules relative paths</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><figure class="highlight js" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Utility <span class="keyword">from</span> <span class="string">'./common/utility.jsx'</span>;</span><br><span class="line"><span class="keyword">import</span> TextService <span class="keyword">from</span> <span class="string">'../services/textService.js'</span>;</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Import modules relative paths</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>import Utility from './common/utility.jsx';
+import TextService from '../services/textService.js';</code></pre></div></figure>
+
 <p>From the example above we should realise that each time we need to use a piece of code in our application, we need to now in which exact folder we are and then start calculating the relative path to this file. This is something that really annoys me and is not only that. Just think the case that the project evolves and the utility file is referenced in multiple places. And then we need to either rename the file or more probably reorganise the folder structure and choose a different one. We have to find all the files that reference this file and make the appropriate changes.</p>
-<h4 id="Webpack-Resolve-Alias-solution"><a href="#Webpack-Resolve-Alias-solution" class="headerlink" title="Webpack Resolve Alias solution"></a>Webpack Resolve Alias solution</h4><p>As mention before <a href="http://webpack.github.io" target="_blank" rel="external">Webpack</a> has a section in it’s configuration (<a href="https://webpack.github.io/docs/configuration.html#resolve" target="_blank" rel="external">resolve section</a>) that could solve this issue and it’s very powerful. We can declare aliases in many ways so we could not rely on relative paths but just reference our code as regular node modules.</p>
+<h4 id="Webpack-Resolve-Alias-solution"><a href="#Webpack-Resolve-Alias-solution" class="headerlink" title="Webpack Resolve Alias solution"></a>Webpack Resolve Alias solution</h4><p>As mention before <a target="_blank" rel="noopener" href="http://webpack.github.io/">Webpack</a> has a section in it’s configuration (<a target="_blank" rel="noopener" href="https://webpack.github.io/docs/configuration.html#resolve">resolve section</a>) that could solve this issue and it’s very powerful. We can declare aliases in many ways so we could not rely on relative paths but just reference our code as regular node modules.</p>
 <p>First let’s see what we need to add to the webpack.config file:</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>Webpack alias config</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><figure class="highlight js" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">resolve: {</span><br><span class="line">  root: path.resolve(__dirname),</span><br><span class="line">  alias: {</span><br><span class="line">    app: <span class="string">'components/app'</span>,</span><br><span class="line">    home: <span class="string">'components/home'</span>,</span><br><span class="line">    utility: <span class="string">'components/common/utility'</span>,</span><br><span class="line">    textService: <span class="string">'services/textService'</span></span><br><span class="line">  },</span><br><span class="line">  extensions: [<span class="string">''</span>, <span class="string">'.js'</span>, <span class="string">'.jsx'</span>]</span><br><span class="line">},</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Webpack alias config</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>resolve: {
+  root: path.resolve(__dirname),
+  alias: {
+    app: 'components/app',
+    home: 'components/home',
+    utility: 'components/common/utility',
+    textService: 'services/textService'
+  },
+  extensions: ['', '.js', '.jsx']
+},</code></pre></div></figure>
+
 <p>It’s important to configure the root with an absolute path so the path in the alias section is becoming relative to where the webpack.config file resides. Of course in a real project where we have more files we should probably extract this object to a separate file and import it in webpack.config file. After that is our responsibility to have unique names in aliases something that probably was easier before, due to folder names.</p>
 <p>But now is interesting to see how the import statements of components look like. Let’s begin with App component as before:</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>Import module through alias</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><figure class="highlight js" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Home <span class="keyword">from</span> <span class="string">'home'</span>;</span><br><span class="line"><span class="keyword">import</span> Utility <span class="keyword">from</span> <span class="string">'utility'</span>;</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Import module through alias</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>import Home from 'home';
+import Utility from 'utility';</code></pre></div></figure>
+
 <p>And let’s also see the Home component</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>Import module through alias</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><figure class="highlight js" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Utility <span class="keyword">from</span> <span class="string">'utility'</span>;</span><br><span class="line"><span class="keyword">import</span> TextService <span class="keyword">from</span> <span class="string">'textService'</span>;</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Import module through alias</span><ul class="tabs"><li class="tab active">js</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>import Utility from 'utility';
+import TextService from 'textService';</code></pre></div></figure>
+
 <p>By now should be obvious that it’s easier to reference any file in our project. On top of that, where every file resides exists only in one place so if there is a need to either rename a file or restructure the folders the only place we have to touch is the aliases. In the configuration I also added the extensions option as it’s a way not to include the extension of the file in the path.</p>
-<p>You can find the code for this example in the corresponding <a href="https://github.com/xabikos/webpack-alias" target="_blank" rel="external">Github repository</a>.</p>
+<p>You can find the code for this example in the corresponding <a target="_blank" rel="noopener" href="https://github.com/xabikos/webpack-alias">Github repository</a>.</p>
 
             
+
+
         </div>
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
@@ -255,64 +410,99 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/webpack/">webpack</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/webpack/" rel="tag">webpack</a>
 
             </div>
         
-        <div class="post-actions-wrap">
+        
+            <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/11/11/Execute-multiple-npm-scripts-through-VS-Code-task-runner/"  data-tooltip="Execute multiple npm scripts through VS Code task runner">
-                
-                    <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2015/11/11/Execute-multiple-npm-scripts-through-VS-Code-task-runner/"
+                    data-tooltip="Execute multiple npm scripts through VS Code task runner"
+                    aria-label="PREVIOUS: Execute multiple npm scripts through VS Code task runner"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/05/17/ASP-NET-vNext-with-webpack/" data-tooltip="ASP.NET vNext with webpack">
-                
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
-                    <i class="fa fa-angle-right"></i>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2015/05/17/ASP-NET-vNext-with-webpack/"
+                    data-tooltip="ASP.NET vNext with webpack"
+                    aria-label="NEXT: ASP.NET vNext with webpack"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
             </li>
         </ul>
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
-                <i class="fa fa-share-alt"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-google-plus"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-facebook-official"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-twitter"></i>
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
         
-            <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
-                    <i class="fa fa-comment-o"></i>
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
-                <i class="fa fa-list"></i>
+                <i class="fa fa-list" aria-hidden="true"></i>
             </a>
         </li>
     </ul>
@@ -320,9 +510,10 @@
 
 
         
+        
             
                 <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
             
         
@@ -333,67 +524,101 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2016 Babis Karypidis. All Rights Reserved.
+        Copyrights &copy; 2024 Babis Karypidis. All Rights Reserved.
     </span>
 </footer>
 
             </div>
             
-                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
                     <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/11/11/Execute-multiple-npm-scripts-through-VS-Code-task-runner/"  data-tooltip="Execute multiple npm scripts through VS Code task runner">
-                
-                    <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2015/11/11/Execute-multiple-npm-scripts-through-VS-Code-task-runner/"
+                    data-tooltip="Execute multiple npm scripts through VS Code task runner"
+                    aria-label="PREVIOUS: Execute multiple npm scripts through VS Code task runner"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/05/17/ASP-NET-vNext-with-webpack/" data-tooltip="ASP.NET vNext with webpack">
-                
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
-                    <i class="fa fa-angle-right"></i>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2015/05/17/ASP-NET-vNext-with-webpack/"
+                    data-tooltip="ASP.NET vNext with webpack"
+                    aria-label="NEXT: ASP.NET vNext with webpack"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
             </li>
         </ul>
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
-                <i class="fa fa-share-alt"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-google-plus"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-facebook-official"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-twitter"></i>
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
         
-            <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
-                    <i class="fa fa-comment-o"></i>
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
-                <i class="fa fa-list"></i>
+                <i class="fa fa-list" aria-hidden="true"></i>
             </a>
         </li>
     </ul>
@@ -401,26 +626,41 @@
 
 
                 </div>
-                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
-    <ul class="share-options">
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
-            </a>
-        </li>
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
-            </a>
-        </li>
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/">
-                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
-            </a>
-        </li>
-    </ul>
-</div>
-<div id="share-options-mask" class="share-options-mask"></div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
             
         </div>
         
@@ -431,60 +671,65 @@
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
-            <i class="fa fa-remove"></i>
+            <i class="fa fa-times"></i>
         </div>
         
-            <img id="about-card-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110" alt="Author&#39;s picture"/>
         
             <h4 id="about-card-name">Babis Karypidis</h4>
         
-            <h5 id="about-card-bio"><p>Hi, I am Babis Karypidis, a Greek software engineer who tries to fit other activities, except development, in his life.</p>
-</h5>
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
         
         
-            <h5 id="about-card-job">
+            <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>Freelance Software Engineer focusing on .NET, Azure and React.js</p>
+                <p>author.job</p>
 
-            </h5>
+            </div>
         
         
-            <h5 id="about-card-location">
-                <i class="fa fa-map-marker"></i>
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
                 <br/>
-                Brussels, Belgium
-            </h5>
+                Thessaloniki, Greece
+            </div>
         
     </div>
 </div>
 
         
-<div id="cover" style="background-image:url('https://globalazurereport.blob.core.windows.net/personalblog/web_development_top.jpg');"></div>
-    </body>
-    <!--SCRIPTS-->
-<script src="/assets/js/scrip-rjanlllosg30d03qrddpwrs6wqf4k3v0bbo68hiifuvthyhqfefx2htcagu0.min.js" type="text/javascript"></script>
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-9xh1uuvzj9epxjrwi1ftdf05eawvprhb9onoygse3kk2ycl8ua9fcrxverfe.min.js"></script>
+
 <!--SCRIPTS END-->
+
 
     
         <script>
-             var disqus_config = function () {
-                 this.page.url = 'http://xabikostest.github.io/2015/10/03/Webpack-aliases-and-relative-paths/';
-                 
-                    this.page.identifier = '2015/10/03/Webpack-aliases-and-relative-paths/';
-                                  
-             };
-            (function() {
-                var d = document, s = d.createElement('script');
-                var disqus_shortname = 'xabikos';
-                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          var disqus_config = function() {
+            this.page.url = 'https://xabikos.com/2015/10/03/Webpack-aliases-and-relative-paths/';
+              
+            this.page.identifier = '2015/10/03/Webpack-aliases-and-relative-paths/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'xabikos';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
 
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
-            })();
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
         </script>
     
 
 
 
+
+    </body>
 </html>

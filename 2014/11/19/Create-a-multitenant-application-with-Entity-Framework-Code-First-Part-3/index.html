@@ -3,7 +3,7 @@
 <html lang="en">
     
 <head>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Web development with asp.net and React.js">
     <title>Create a multitenant application with Entity Framework Code First - Part 3 - Web development with asp.net and React.js</title>
@@ -13,44 +13,57 @@
     
     
     
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+        
+            <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+        
     
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Babis Karypidis","sameAs":["https://github.com/xabikos","http://stackoverflow.com/users/2326486/xabikos","https://twitter.com/xabikos","https://www.linkedin.com/in/charalamposkarypidis/","mailto:xaralaboskaripidis@gmail.com"],"image":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5"},"articleBody":"Connection with previous postsThis is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read Part 1 where there is an introduction in the problem we are trying to solve and some infrastructure code required to continue. Part 2 describes the query filtering that is happening automatically in the entire application. In this post I am going to show how we can use the CommandTree interceptor in order to modify the insert, update and delete commands. The idea of implement something like this came to my mind after watching Rowan Miller’s excellent session in North America TechEd, which I highly recommend you to watch.\n\n\nModification of insert commandLet’s start by presenting the code of insert command which is probably the simplest case. What we want to achieve is to always assign the correct TenantId when saving an entity that has this property. I have to remind here that Message class has a private set in TenantId property so there is no way to assign it from the code base.\nInsert command interceptorcspublic class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {\n    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {\n        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {\n            // Check that there is an authenticated user in this context\n            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;\n            if (identity == null){\n                return;\n            }\n            var userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);\n            if (userIdclaim == null) {\n                return;\n            }\n            var userId = userIdclaim.Value;\n\n            var insertCommand = interceptionContext.Result as DbInsertCommandTree;\n            if (insertCommand != null) {\n                var column = TenantAwareAttribute.GetTenantColumnName(insertCommand.Target.VariableType.EdmType);\n                if (!string.IsNullOrEmpty(column)) {\n                    // Create the variable reference in order to create the property\n                    var variableReference = DbExpressionBuilder.Variable(insertCommand.Target.VariableType,\n                        insertCommand.Target.VariableName);\n                    // Create the property to which will assign the correct value\n                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);\n                    // Create the set clause, object representation of sql insert command\n                    var tenantSetClause =\n                        DbExpressionBuilder.SetClause(tenantProperty, DbExpression.FromString(userId));\n\n                    // Remove potential assignment of tenantId for extra safety\n                    var filteredSetClauses =\n                        insertCommand.SetClauses.Cast&lt;DbSetClause&gt;()\n                            .Where(sc =&gt; ((DbPropertyExpression)sc.Property).Property.Name != column);\n\n                    // Construct the final clauses, object representation of sql insert command values\n                    var finalSetClauses =\n                        new ReadOnlyCollection&lt;DbModificationClause&gt;\n                        (new List&lt;DbModificationClause&gt;(filteredSetClauses) {\n                            tenantSetClause\n                        });\n\n                    var newInsertCommand = new DbInsertCommandTree(\n                        insertCommand.MetadataWorkspace,\n                        insertCommand.DataSpace,\n                        insertCommand.Target,\n                        finalSetClauses,\n                        insertCommand.Returning);\n\n                    interceptionContext.Result = newInsertCommand;\n                    return;\n                }\n            }\n        }\n    }\n}\n\nThe most important piece of code is where we create the set clause. To further explain this is an object representation of a SQL pair values like INSERT INTO TABLE (TenantId) VALUE (the value of tenantId). After doing this we filter the original collection of set clause and remove any possible existence of the same set clause. As a final step we create a new insert command by assigning the original values and replacing only the set clause. The interception ends by setting the result explicitly.\n\nModification of update commandNow we have to modify any update command that is sent to the database and remove any change in the value of tenantId and add an extra where statement based on the tenantId. So after the interception any SQL update command is going to have an extra and statement like AND TenantId &#x3D; ‘value of tenantId’.\nUpdate command interceptorcspublic class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {\n    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {\n        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {\n            // Check that there is an authenticated user in this context\n            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;\n            if (identity == null){\n                return;\n            }\n            var userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);\n            if (userIdclaim == null) {\n                return;\n            }\n            var userId = userIdclaim.Value;\n            var updateCommand = interceptionContext.Result as DbUpdateCommandTree;\n            if (updateCommand != null) {\n                var column = TenantAwareAttribute.GetTenantColumnName(updateCommand.Target.VariableType.EdmType);\n                if (!string.IsNullOrEmpty(column)){\n                    // Create the variable reference in order to create the property\n                    var variableReference = DbExpressionBuilder.Variable(updateCommand.Target.VariableType,\n                        updateCommand.Target.VariableName);\n                    // Create the property to which will assign the correct value\n                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);\n                    // Create the tenantId where predicate, object representation of sql where tenantId = value statement\n                    var tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));\n\n                    // Remove potential assignment of tenantId for extra safety\n                    var filteredSetClauses =\n                        updateCommand.SetClauses.Cast&lt;DbSetClause&gt;()\n                            .Where(sc =&gt; ((DbPropertyExpression)sc.Property).Property.Name != column);\n\n                    // Construct the final clauses, object representation of sql insert command values\n                    var finalSetClauses =\n                        new ReadOnlyCollection&lt;DbModificationClause&gt;(new List&lt;DbModificationClause&gt;(filteredSetClauses));\n\n                    // The initial predicate is the sql where statement\n                    var initialPredicate = updateCommand.Predicate;\n                    // Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'\n                    var finalPredicate = initialPredicate.And(tenantIdWherePredicate);\n\n                    var newUpdateCommand = new DbUpdateCommandTree(\n                        updateCommand.MetadataWorkspace,\n                        updateCommand.DataSpace,\n                        updateCommand.Target,\n                        finalPredicate,\n                        finalSetClauses,\n                        updateCommand.Returning);\n\n                    interceptionContext.Result = newUpdateCommand;\n                    return;\n                }\n            }\n        }\n    }\n}\n\nThe first part of the code is exactly the same as the interception in insert command. The only difference here is that we don’t create another set clause but a predicate which is the object representation of the SQL And statement. We explicitly do a logical AND with the original predicate and assign the final predicate in the new update command we construct.\n\nModification of delete commandThe last piece to finish the puzzle is to modify the delete command before travelling to the database. The goal is exactly the same with update command. We want to append an extra where SQL statement in all delete commands. The code is also the same as in update command.\nDelete command interceptorcspublic class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {\n    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {\n        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {\n            // Check that there is an authenticated user in this context\n            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;\n            if (identity == null){\n                return;\n            }\n            var userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);\n            if (userIdclaim == null) {\n                return;\n            }\n            var userId = userIdclaim.Value;\n\n            var deleteCommand = interceptionContext.Result as DbDeleteCommandTree;\n            if (deleteCommand != null){\n                var column = TenantAwareAttribute.GetTenantColumnName(deleteCommand.Target.VariableType.EdmType);\n                if (!string.IsNullOrEmpty(column)){\n                    // Create the variable reference in order to create the property\n                    var variableReference = DbExpressionBuilder.Variable(deleteCommand.Target.VariableType,\n                        deleteCommand.Target.VariableName);\n                    // Create the property to which will assign the correct value\n                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);\n                    var tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));\n\n                    // The initial predicate is the sql where statement\n                    var initialPredicate = deleteCommand.Predicate;\n                    // Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'\n                    var finalPredicate = initialPredicate.And(tenantIdWherePredicate);\n\n                    var newDeleteCommand = new DbDeleteCommandTree(\n                        deleteCommand.MetadataWorkspace,\n                        deleteCommand.DataSpace,\n                        deleteCommand.Target,\n                        finalPredicate);\n\n                    interceptionContext.Result = newDeleteCommand;\n                    return ;\n                }\n            }\n        }\n    }\n}\n\nWe create manually again a predicate and do a logical AND with the original predicate of the command. After this we creating a new delete command and assign it as the interception result. There is no need to create different interceptors class per command of course. We can combine all of them in just one class as you can see in this example.\n\nFinal thoughtsThis was the last part of a series of posts. You can find the first part here and the second here. I hope that these posts will become useful to other developers as this is the way we solved the multi tenancy data access problem in the project I am currently working on. Any comments or thoughts to improve the code are more than welcome. As I mentioned in the previous posts I have a public Github repository that contains a full project with the demonstrated code.\nPart 1Part 2","dateCreated":"2014-11-19T20:15:00+02:00","dateModified":"2024-04-20T18:01:58+03:00","datePublished":"2014-11-19T20:15:00+02:00","description":"Connection with previous postsThis is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read Part 1 where there is an introduction in the problem we are trying to solve and some infrastructure code required to continue. Part 2 describes the query filtering that is happening automatically in the entire application. In this post I am going to show how we can use the CommandTree interceptor in order to modify the insert, update and delete commands. The idea of implement something like this came to my mind after watching Rowan Miller’s excellent session in North America TechEd, which I highly recommend you to watch.","headline":"Create a multitenant application with Entity Framework Code First - Part 3","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/"},"publisher":{"@type":"Organization","name":"Babis Karypidis","sameAs":["https://github.com/xabikos","http://stackoverflow.com/users/2326486/xabikos","https://twitter.com/xabikos","https://www.linkedin.com/in/charalamposkarypidis/","mailto:xaralaboskaripidis@gmail.com"],"image":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5"}},"url":"https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/","keywords":"entity framework, multi-tenant, interceptors, code first"}</script>
     <meta name="description" content="Connection with previous postsThis is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read Part 1 where there">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Create a multitenant application with Entity Framework Code First - Part 3">
-<meta property="og:url" content="http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/index.html">
+<meta property="og:url" content="https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/index.html">
 <meta property="og:site_name" content="Web development with asp.net and React.js">
 <meta property="og:description" content="Connection with previous postsThis is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read Part 1 where there">
-<meta property="og:updated_time" content="2016-05-08T18:40:11.263Z">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-11-19T18:15:00.000Z">
+<meta property="article:modified_time" content="2024-04-20T15:01:58.567Z">
+<meta property="article:author" content="Babis Karypidis">
+<meta property="article:tag" content="entity framework">
+<meta property="article:tag" content="multi-tenant">
+<meta property="article:tag" content="interceptors">
+<meta property="article:tag" content="code first">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Create a multitenant application with Entity Framework Code First - Part 3">
-<meta name="twitter:description" content="Connection with previous postsThis is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read Part 1 where there">
 <meta name="twitter:creator" content="@xabikos">
     
     
         
     
     
-        <meta property="og:image" content="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
+        <meta property="og:image" content="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=640"/>
     
     
     
     
     <!--STYLES-->
-    <link rel="stylesheet" href="/assets/css/style-quwccsthbllipo6252snb2tfkddvrsp1eczkytpz3vmxpsb6nwodixemlkux.min.css" type="text/css">
+    
+<link rel="stylesheet" href="/assets/css/style-l75e9pkst9f5hq5irx80zjnvasnb2rnqxprrbw9gnxafornapyufpp3d5poq.min.css">
+
     <!--STYLES END-->
     
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-56484404-1']);
-        _gaq.push(['_trackPageview']);
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56484404-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-56484404-1');
     </script>
 
+
+    
+
+    
+        
     
 </head>
 
@@ -63,18 +76,27 @@
         
     
 
-<header id="header" data-behavior="4">
+<header id="header" data-behavior="5">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
-    <h1 class="header-title">
-        <a class="header-title-link" href="/ ">Web development with asp.net and React.js</a>
-    </h1>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Web development with asp.net and React.js
+        </a>
+    </div>
     
         
-            <a  class="header-right-picture "
-                href="/#about">
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
         
         
-            <img class="header-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90"/>
+            <img class="header-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=90" alt="Author&#39;s picture"/>
         
         </a>
     
@@ -85,131 +107,235 @@
 
     
 
-<nav id="sidebar" data-behavior="4">
-    
-        <div class="sidebar-profile">
-            <a href="/#about">
-                    <img class="sidebar-profile-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
-            </a>
-            <span class="sidebar-profile-name">Babis Karypidis</span>
-        </div>
-    
-    
-        <ul class="sidebar-buttons">
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/ "
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
-                    <span class="sidebar-button-desc">Home</span>
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110" alt="Author&#39;s picture"/>
                 </a>
-        </li>
+                <h4 class="sidebar-profile-name">Babis Karypidis</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/all-categories"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
-                    <span class="sidebar-button-desc">Categories</span>
-                </a>
-        </li>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/all-tags"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
-                    <span class="sidebar-button-desc">Tags</span>
-                </a>
-        </li>
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="Archives"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link open-algolia-search"
+                            href="#search"
+                            
+                            rel="noopener"
+                            title="Search"
+                        >
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-    </ul>
-    
-        <ul class="sidebar-buttons">
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users/2326486/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://twitter.com/xabikos"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Twitter"
+                        >
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/in/charalamposkarypidis/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:xaralaboskaripidis@gmail.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Mail"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://github.com/xabikos" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
-                    <span class="sidebar-button-desc">GitHub</span>
-                </a>
-        </li>
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
         
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://twitter.com/xabikos" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
-                    <span class="sidebar-button-desc">Twitter</span>
-                </a>
-        </li>
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="https://www.linkedin.com/in/charalamposkarypidis/" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
-                    <span class="sidebar-button-desc">LinkedIn</span>
-                </a>
-        </li>
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link " href="mailto:xaralaboskaripidis@gmail.com" target="_blank">
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
-                    <span class="sidebar-button-desc">Mail</span>
-                </a>
-        </li>
-        
-    </ul>
-    
-        <ul class="sidebar-buttons">
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/atom.xml"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
-                    <span class="sidebar-button-desc">RSS</span>
-                </a>
-        </li>
-        
-    </ul>
-    
+    </div>
 </nav>
 
             
-            <div id="main" data-behavior="4"
+            <div id="main" data-behavior="5"
                  class="
                         hasCoverMetaIn
                         ">
                 
-<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+<article class="post">
     
     
         <div class="post-header main-content-wrap text-left">
     
-        <h1 class="post-title" itemprop="headline">
+        <h1 class="post-title">
             Create a multitenant application with Entity Framework Code First - Part 3
         </h1>
     
-    <div class="post-meta">
-    <time itemprop="datePublished" content="Wed Nov 19 2014 20:15:00 GMT+0100">
+    
+        <div class="post-meta">
+    <time datetime="2014-11-19T20:15:00+02:00">
 	
 		    Nov 19, 2014
     	
@@ -222,25 +348,183 @@
 
     
 </div>
-</div>
+
     
-    <div class="post-content markdown" itemprop="articleBody">
+</div>
+
+    
+    <div class="post-content markdown">
         <div class="main-content-wrap">
-            <h4 id="Connection-with-previous-posts"><a href="#Connection-with-previous-posts" class="headerlink" title="Connection with previous posts"></a>Connection with previous posts</h4><p>This is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read <a href="/2014/11/17/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-1/">Part 1</a> where there is an introduction in the problem we are trying to solve and some infrastructure code required to continue. <a href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/">Part 2</a> describes the query filtering that is happening automatically in the entire application. In this post I am going to show how we can use the CommandTree interceptor in order to modify the insert, update and delete commands. The idea of implement something like this came to my mind after watching <a href="http://romiller.com/" target="_blank" rel="external">Rowan Miller’s</a> excellent <a href="http://channel9.msdn.com/Events/TechEd/NorthAmerica/2014/DEV-B417#fbid=" target="_blank" rel="external">session</a> in North America TechEd, which I highly recommend you to watch.<br><a id="more"></a></p>
+            <h4 id="Connection-with-previous-posts"><a href="#Connection-with-previous-posts" class="headerlink" title="Connection with previous posts"></a>Connection with previous posts</h4><p>This is the last post of the series of how we can use Entity Framework Code First to create a multitenant application. You are requested first to read <a href="/2014/11/17/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-1/">Part 1</a> where there is an introduction in the problem we are trying to solve and some infrastructure code required to continue. <a href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/">Part 2</a> describes the query filtering that is happening automatically in the entire application. In this post I am going to show how we can use the CommandTree interceptor in order to modify the insert, update and delete commands. The idea of implement something like this came to my mind after watching <a target="_blank" rel="noopener" href="http://romiller.com/">Rowan Miller’s</a> excellent <a target="_blank" rel="noopener" href="http://channel9.msdn.com/Events/TechEd/NorthAmerica/2014/DEV-B417#fbid=">session</a> in North America TechEd, which I highly recommend you to watch.</p>
+<span id="more"></span>
 <hr>
-<h4 id="Modification-of-insert-command"><a href="#Modification-of-insert-command" class="headerlink" title="Modification of insert command"></a>Modification of insert command</h4><p>Let’s start by presenting the code of insert command which is probably the simplest case. What we want to achieve is to always assign the correct TenantId when saving an entity that has this property. I have to remind here that Message class has a private set in TenantId property so there is no way to assign it from the code base.<br><figure class="codeblock codeblock--tabbed"><figcaption><span>Insert command interceptor</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TenantCommandTreeInterceptor</span> : <span class="title">IDbCommandTreeInterceptor</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TreeCreated</span>(<span class="params">DbCommandTreeInterceptionContext interceptionContext</span>) </span>{</span><br><span class="line">        <span class="keyword">if</span> (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {</span><br><span class="line">            <span class="comment">// Check that there is an authenticated user in this context</span></span><br><span class="line">            <span class="keyword">var</span> identity = Thread.CurrentPrincipal.Identity <span class="keyword">as</span> ClaimsIdentity;</span><br><span class="line">            <span class="keyword">if</span> (identity == <span class="keyword">null</span>){</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">var</span> userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);</span><br><span class="line">            <span class="keyword">if</span> (userIdclaim == <span class="keyword">null</span>) {</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">var</span> userId = userIdclaim.Value;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> insertCommand = interceptionContext.Result <span class="keyword">as</span> DbInsertCommandTree;</span><br><span class="line">            <span class="keyword">if</span> (insertCommand != <span class="keyword">null</span>) {</span><br><span class="line">                <span class="keyword">var</span> column = TenantAwareAttribute.GetTenantColumnName(insertCommand.Target.VariableType.EdmType);</span><br><span class="line">                <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(column)) {</span><br><span class="line">                    <span class="comment">// Create the variable reference in order to create the property</span></span><br><span class="line">                    <span class="keyword">var</span> variableReference = DbExpressionBuilder.Variable(insertCommand.Target.VariableType,</span><br><span class="line">                        insertCommand.Target.VariableName);</span><br><span class="line">                    <span class="comment">// Create the property to which will assign the correct value</span></span><br><span class="line">                    <span class="keyword">var</span> tenantProperty = DbExpressionBuilder.Property(variableReference, column);</span><br><span class="line">                    <span class="comment">// Create the set clause, object representation of sql insert command</span></span><br><span class="line">                    <span class="keyword">var</span> tenantSetClause =</span><br><span class="line">                        DbExpressionBuilder.SetClause(tenantProperty, DbExpression.FromString(userId));</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Remove potential assignment of tenantId for extra safety</span></span><br><span class="line">                    <span class="keyword">var</span> filteredSetClauses =</span><br><span class="line">                        insertCommand.SetClauses.Cast&lt;DbSetClause&gt;()</span><br><span class="line">                            .Where(sc =&gt; ((DbPropertyExpression)sc.Property).Property.Name != column);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Construct the final clauses, object representation of sql insert command values</span></span><br><span class="line">                    <span class="keyword">var</span> finalSetClauses =</span><br><span class="line">                        <span class="keyword">new</span> ReadOnlyCollection&lt;DbModificationClause&gt;</span><br><span class="line">                        (<span class="keyword">new</span> List&lt;DbModificationClause&gt;(filteredSetClauses) {</span><br><span class="line">                            tenantSetClause</span><br><span class="line">                        });</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">var</span> newInsertCommand = <span class="keyword">new</span> DbInsertCommandTree(</span><br><span class="line">                        insertCommand.MetadataWorkspace,</span><br><span class="line">                        insertCommand.DataSpace,</span><br><span class="line">                        insertCommand.Target,</span><br><span class="line">                        finalSetClauses,</span><br><span class="line">                        insertCommand.Returning);</span><br><span class="line"></span><br><span class="line">                    interceptionContext.Result = newInsertCommand;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure></p>
+<h4 id="Modification-of-insert-command"><a href="#Modification-of-insert-command" class="headerlink" title="Modification of insert command"></a>Modification of insert command</h4><p>Let’s start by presenting the code of insert command which is probably the simplest case. What we want to achieve is to always assign the correct TenantId when saving an entity that has this property. I have to remind here that Message class has a private set in TenantId property so there is no way to assign it from the code base.</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Insert command interceptor</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>public class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {
+    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
+        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
+            // Check that there is an authenticated user in this context
+            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+            if (identity == null){
+                return;
+            }
+            var userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);
+            if (userIdclaim == null) {
+                return;
+            }
+            var userId = userIdclaim.Value;
+
+            var insertCommand = interceptionContext.Result as DbInsertCommandTree;
+            if (insertCommand != null) {
+                var column = TenantAwareAttribute.GetTenantColumnName(insertCommand.Target.VariableType.EdmType);
+                if (!string.IsNullOrEmpty(column)) {
+                    // Create the variable reference in order to create the property
+                    var variableReference = DbExpressionBuilder.Variable(insertCommand.Target.VariableType,
+                        insertCommand.Target.VariableName);
+                    // Create the property to which will assign the correct value
+                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
+                    // Create the set clause, object representation of sql insert command
+                    var tenantSetClause =
+                        DbExpressionBuilder.SetClause(tenantProperty, DbExpression.FromString(userId));
+
+                    // Remove potential assignment of tenantId for extra safety
+                    var filteredSetClauses =
+                        insertCommand.SetClauses.Cast&lt;DbSetClause&gt;()
+                            .Where(sc =&gt; ((DbPropertyExpression)sc.Property).Property.Name != column);
+
+                    // Construct the final clauses, object representation of sql insert command values
+                    var finalSetClauses =
+                        new ReadOnlyCollection&lt;DbModificationClause&gt;
+                        (new List&lt;DbModificationClause&gt;(filteredSetClauses) {
+                            tenantSetClause
+                        });
+
+                    var newInsertCommand = new DbInsertCommandTree(
+                        insertCommand.MetadataWorkspace,
+                        insertCommand.DataSpace,
+                        insertCommand.Target,
+                        finalSetClauses,
+                        insertCommand.Returning);
+
+                    interceptionContext.Result = newInsertCommand;
+                    return;
+                }
+            }
+        }
+    }
+}</code></pre></div></figure>
+
 <p>The most important piece of code is where we create the set clause. To further explain this is an object representation of a SQL pair values like INSERT INTO TABLE (TenantId) VALUE (the value of tenantId). After doing this we filter the original collection of set clause and remove any possible existence of the same set clause. As a final step we create a new insert command by assigning the original values and replacing only the set clause. The interception ends by setting the result explicitly.</p>
 <hr>
-<h4 id="Modification-of-update-command"><a href="#Modification-of-update-command" class="headerlink" title="Modification of update command"></a>Modification of update command</h4><p>Now we have to modify any update command that is sent to the database and remove any change in the value of tenantId and add an extra where statement based on the tenantId. So after the interception any SQL update command is going to have an extra and statement like AND TenantId = ‘value of tenantId’.<br><figure class="codeblock codeblock--tabbed"><figcaption><span>Update command interceptor</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TenantCommandTreeInterceptor</span> : <span class="title">IDbCommandTreeInterceptor</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TreeCreated</span>(<span class="params">DbCommandTreeInterceptionContext interceptionContext</span>) </span>{</span><br><span class="line">        <span class="keyword">if</span> (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {</span><br><span class="line">            <span class="comment">// Check that there is an authenticated user in this context</span></span><br><span class="line">            <span class="keyword">var</span> identity = Thread.CurrentPrincipal.Identity <span class="keyword">as</span> ClaimsIdentity;</span><br><span class="line">            <span class="keyword">if</span> (identity == <span class="keyword">null</span>){</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">var</span> userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);</span><br><span class="line">            <span class="keyword">if</span> (userIdclaim == <span class="keyword">null</span>) {</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">var</span> userId = userIdclaim.Value;</span><br><span class="line">            <span class="keyword">var</span> updateCommand = interceptionContext.Result <span class="keyword">as</span> DbUpdateCommandTree;</span><br><span class="line">            <span class="keyword">if</span> (updateCommand != <span class="keyword">null</span>) {</span><br><span class="line">                <span class="keyword">var</span> column = TenantAwareAttribute.GetTenantColumnName(updateCommand.Target.VariableType.EdmType);</span><br><span class="line">                <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(column)){</span><br><span class="line">                    <span class="comment">// Create the variable reference in order to create the property</span></span><br><span class="line">                    <span class="keyword">var</span> variableReference = DbExpressionBuilder.Variable(updateCommand.Target.VariableType,</span><br><span class="line">                        updateCommand.Target.VariableName);</span><br><span class="line">                    <span class="comment">// Create the property to which will assign the correct value</span></span><br><span class="line">                    <span class="keyword">var</span> tenantProperty = DbExpressionBuilder.Property(variableReference, column);</span><br><span class="line">                    <span class="comment">// Create the tenantId where predicate, object representation of sql where tenantId = value statement</span></span><br><span class="line">                    <span class="keyword">var</span> tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Remove potential assignment of tenantId for extra safety</span></span><br><span class="line">                    <span class="keyword">var</span> filteredSetClauses =</span><br><span class="line">                        updateCommand.SetClauses.Cast&lt;DbSetClause&gt;()</span><br><span class="line">                            .Where(sc =&gt; ((DbPropertyExpression)sc.Property).Property.Name != column);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Construct the final clauses, object representation of sql insert command values</span></span><br><span class="line">                    <span class="keyword">var</span> finalSetClauses =</span><br><span class="line">                        <span class="keyword">new</span> ReadOnlyCollection&lt;DbModificationClause&gt;(<span class="keyword">new</span> List&lt;DbModificationClause&gt;(filteredSetClauses));</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// The initial predicate is the sql where statement</span></span><br><span class="line">                    <span class="keyword">var</span> initialPredicate = updateCommand.Predicate;</span><br><span class="line">                    <span class="comment">// Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'</span></span><br><span class="line">                    <span class="keyword">var</span> finalPredicate = initialPredicate.And(tenantIdWherePredicate);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">var</span> newUpdateCommand = <span class="keyword">new</span> DbUpdateCommandTree(</span><br><span class="line">                        updateCommand.MetadataWorkspace,</span><br><span class="line">                        updateCommand.DataSpace,</span><br><span class="line">                        updateCommand.Target,</span><br><span class="line">                        finalPredicate,</span><br><span class="line">                        finalSetClauses,</span><br><span class="line">                        updateCommand.Returning);</span><br><span class="line"></span><br><span class="line">                    interceptionContext.Result = newUpdateCommand;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure></p>
+<h4 id="Modification-of-update-command"><a href="#Modification-of-update-command" class="headerlink" title="Modification of update command"></a>Modification of update command</h4><p>Now we have to modify any update command that is sent to the database and remove any change in the value of tenantId and add an extra where statement based on the tenantId. So after the interception any SQL update command is going to have an extra and statement like AND TenantId &#x3D; ‘value of tenantId’.</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Update command interceptor</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>public class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {
+    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
+        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
+            // Check that there is an authenticated user in this context
+            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+            if (identity == null){
+                return;
+            }
+            var userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);
+            if (userIdclaim == null) {
+                return;
+            }
+            var userId = userIdclaim.Value;
+            var updateCommand = interceptionContext.Result as DbUpdateCommandTree;
+            if (updateCommand != null) {
+                var column = TenantAwareAttribute.GetTenantColumnName(updateCommand.Target.VariableType.EdmType);
+                if (!string.IsNullOrEmpty(column)){
+                    // Create the variable reference in order to create the property
+                    var variableReference = DbExpressionBuilder.Variable(updateCommand.Target.VariableType,
+                        updateCommand.Target.VariableName);
+                    // Create the property to which will assign the correct value
+                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
+                    // Create the tenantId where predicate, object representation of sql where tenantId = value statement
+                    var tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));
+
+                    // Remove potential assignment of tenantId for extra safety
+                    var filteredSetClauses =
+                        updateCommand.SetClauses.Cast&lt;DbSetClause&gt;()
+                            .Where(sc =&gt; ((DbPropertyExpression)sc.Property).Property.Name != column);
+
+                    // Construct the final clauses, object representation of sql insert command values
+                    var finalSetClauses =
+                        new ReadOnlyCollection&lt;DbModificationClause&gt;(new List&lt;DbModificationClause&gt;(filteredSetClauses));
+
+                    // The initial predicate is the sql where statement
+                    var initialPredicate = updateCommand.Predicate;
+                    // Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'
+                    var finalPredicate = initialPredicate.And(tenantIdWherePredicate);
+
+                    var newUpdateCommand = new DbUpdateCommandTree(
+                        updateCommand.MetadataWorkspace,
+                        updateCommand.DataSpace,
+                        updateCommand.Target,
+                        finalPredicate,
+                        finalSetClauses,
+                        updateCommand.Returning);
+
+                    interceptionContext.Result = newUpdateCommand;
+                    return;
+                }
+            }
+        }
+    }
+}</code></pre></div></figure>
+
 <p>The first part of the code is exactly the same as the interception in insert command. The only difference here is that we don’t create another set clause but a predicate which is the object representation of the SQL And statement. We explicitly do a logical AND with the original predicate and assign the final predicate in the new update command we construct.</p>
 <hr>
 <h4 id="Modification-of-delete-command"><a href="#Modification-of-delete-command" class="headerlink" title="Modification of delete command"></a>Modification of delete command</h4><p>The last piece to finish the puzzle is to modify the delete command before travelling to the database. The goal is exactly the same with update command. We want to append an extra where SQL statement in all delete commands. The code is also the same as in update command.</p>
-<figure class="codeblock codeblock--tabbed"><figcaption><span>Delete command interceptor</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><figure class="highlight cs" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TenantCommandTreeInterceptor</span> : <span class="title">IDbCommandTreeInterceptor</span> {</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TreeCreated</span>(<span class="params">DbCommandTreeInterceptionContext interceptionContext</span>) </span>{</span><br><span class="line">        <span class="keyword">if</span> (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {</span><br><span class="line">            <span class="comment">// Check that there is an authenticated user in this context</span></span><br><span class="line">            <span class="keyword">var</span> identity = Thread.CurrentPrincipal.Identity <span class="keyword">as</span> ClaimsIdentity;</span><br><span class="line">            <span class="keyword">if</span> (identity == <span class="keyword">null</span>){</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">var</span> userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);</span><br><span class="line">            <span class="keyword">if</span> (userIdclaim == <span class="keyword">null</span>) {</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">var</span> userId = userIdclaim.Value;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> deleteCommand = interceptionContext.Result <span class="keyword">as</span> DbDeleteCommandTree;</span><br><span class="line">            <span class="keyword">if</span> (deleteCommand != <span class="keyword">null</span>){</span><br><span class="line">                <span class="keyword">var</span> column = TenantAwareAttribute.GetTenantColumnName(deleteCommand.Target.VariableType.EdmType);</span><br><span class="line">                <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(column)){</span><br><span class="line">                    <span class="comment">// Create the variable reference in order to create the property</span></span><br><span class="line">                    <span class="keyword">var</span> variableReference = DbExpressionBuilder.Variable(deleteCommand.Target.VariableType,</span><br><span class="line">                        deleteCommand.Target.VariableName);</span><br><span class="line">                    <span class="comment">// Create the property to which will assign the correct value</span></span><br><span class="line">                    <span class="keyword">var</span> tenantProperty = DbExpressionBuilder.Property(variableReference, column);</span><br><span class="line">                    <span class="keyword">var</span> tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// The initial predicate is the sql where statement</span></span><br><span class="line">                    <span class="keyword">var</span> initialPredicate = deleteCommand.Predicate;</span><br><span class="line">                    <span class="comment">// Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'</span></span><br><span class="line">                    <span class="keyword">var</span> finalPredicate = initialPredicate.And(tenantIdWherePredicate);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">var</span> newDeleteCommand = <span class="keyword">new</span> DbDeleteCommandTree(</span><br><span class="line">                        deleteCommand.MetadataWorkspace,</span><br><span class="line">                        deleteCommand.DataSpace,</span><br><span class="line">                        deleteCommand.Target,</span><br><span class="line">                        finalPredicate);</span><br><span class="line"></span><br><span class="line">                    interceptionContext.Result = newDeleteCommand;</span><br><span class="line">                    <span class="keyword">return</span> ;</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></div></figure>
-<p>We create manually again a predicate and do a logical AND with the original predicate of the command. After this we creating a new delete command and assign it as the interception result. There is no need to create different interceptors class per command of course. We can combine all of them in just one class as you can see in <a href="https://github.com/xabikos/EfMultitenant/blob/master/Multitenant.Interception/Infrastructure/TenantCommandTreeInterceptor.cs" target="_blank" rel="external">this example</a>.</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Delete command interceptor</span><ul class="tabs"><li class="tab active">cs</li></ul></figcaption><div class="tabs-content"><pre style="display: block;"><code>public class TenantCommandTreeInterceptor : IDbCommandTreeInterceptor {
+    public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext) {
+        if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace) {
+            // Check that there is an authenticated user in this context
+            var identity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+            if (identity == null){
+                return;
+            }
+            var userIdclaim = identity.Claims.SingleOrDefault(c =&gt; c.Type == ClaimTypes.NameIdentifier);
+            if (userIdclaim == null) {
+                return;
+            }
+            var userId = userIdclaim.Value;
+
+            var deleteCommand = interceptionContext.Result as DbDeleteCommandTree;
+            if (deleteCommand != null){
+                var column = TenantAwareAttribute.GetTenantColumnName(deleteCommand.Target.VariableType.EdmType);
+                if (!string.IsNullOrEmpty(column)){
+                    // Create the variable reference in order to create the property
+                    var variableReference = DbExpressionBuilder.Variable(deleteCommand.Target.VariableType,
+                        deleteCommand.Target.VariableName);
+                    // Create the property to which will assign the correct value
+                    var tenantProperty = DbExpressionBuilder.Property(variableReference, column);
+                    var tenantIdWherePredicate = DbExpressionBuilder.Equal(tenantProperty, DbExpression.FromString(userId));
+
+                    // The initial predicate is the sql where statement
+                    var initialPredicate = deleteCommand.Predicate;
+                    // Add to the initial statement the tenantId statement which translates in sql AND TenantId = 'value'
+                    var finalPredicate = initialPredicate.And(tenantIdWherePredicate);
+
+                    var newDeleteCommand = new DbDeleteCommandTree(
+                        deleteCommand.MetadataWorkspace,
+                        deleteCommand.DataSpace,
+                        deleteCommand.Target,
+                        finalPredicate);
+
+                    interceptionContext.Result = newDeleteCommand;
+                    return ;
+                }
+            }
+        }
+    }
+}</code></pre></div></figure>
+
+<p>We create manually again a predicate and do a logical AND with the original predicate of the command. After this we creating a new delete command and assign it as the interception result. There is no need to create different interceptors class per command of course. We can combine all of them in just one class as you can see in <a target="_blank" rel="noopener" href="https://github.com/xabikos/EfMultitenant/blob/master/Multitenant.Interception/Infrastructure/TenantCommandTreeInterceptor.cs">this example</a>.</p>
 <hr>
-<h4 id="Final-thoughts"><a href="#Final-thoughts" class="headerlink" title="Final thoughts"></a>Final thoughts</h4><p>This was the last part of a series of posts. You can find the first part <a href="/2014/11/17/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-1/">here</a> and the second <a href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/">here</a>. I hope that these posts will become useful to other developers as this is the way we solved the multi tenancy data access problem in the project I am currently working on. Any comments or thoughts to improve the code are more than welcome. As I mentioned in the previous posts I have a public <a href="https://github.com/xabikos/EfMultitenant/" target="_blank" rel="external">Github repository</a> that contains a full project with the demonstrated code.</p>
+<h4 id="Final-thoughts"><a href="#Final-thoughts" class="headerlink" title="Final thoughts"></a>Final thoughts</h4><p>This was the last part of a series of posts. You can find the first part <a href="/2014/11/17/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-1/">here</a> and the second <a href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/">here</a>. I hope that these posts will become useful to other developers as this is the way we solved the multi tenancy data access problem in the project I am currently working on. Any comments or thoughts to improve the code are more than welcome. As I mentioned in the previous posts I have a public <a target="_blank" rel="noopener" href="https://github.com/xabikos/EfMultitenant/">Github repository</a> that contains a full project with the demonstrated code.</p>
 <h3 id="Part-1"><a href="#Part-1" class="headerlink" title="Part 1"></a><a href="/2014/11/17/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-1/">Part 1</a></h3><h3 id="Part-2"><a href="#Part-2" class="headerlink" title="Part 2"></a><a href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/">Part 2</a></h3>
             
+
+
         </div>
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
@@ -248,64 +532,99 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/code-first/">code first</a> <a class="tag tag--primary tag--small t-link" href="/tags/entity-framework/">entity framework</a> <a class="tag tag--primary tag--small t-link" href="/tags/interceptors/">interceptors</a> <a class="tag tag--primary tag--small t-link" href="/tags/multi-tenant/">multi-tenant</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/code-first/" rel="tag">code first</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/entity-framework/" rel="tag">entity framework</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/interceptors/" rel="tag">interceptors</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/multi-tenant/" rel="tag">multi-tenant</a>
 
             </div>
         
-        <div class="post-actions-wrap">
+        
+            <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2014/12/02/My-participation-in-ItProDevConnections-2014/"  data-tooltip="My participation in ItProDevConnections 2014">
-                
-                    <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2014/12/02/My-participation-in-ItProDevConnections-2014/"
+                    data-tooltip="My participation in ItProDevConnections 2014"
+                    aria-label="PREVIOUS: My participation in ItProDevConnections 2014"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/" data-tooltip="Create a multitenant application with Entity Framework Code First - Part 2">
-                
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
-                    <i class="fa fa-angle-right"></i>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/"
+                    data-tooltip="Create a multitenant application with Entity Framework Code First - Part 2"
+                    aria-label="NEXT: Create a multitenant application with Entity Framework Code First - Part 2"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
             </li>
         </ul>
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
-                <i class="fa fa-share-alt"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-google-plus"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-facebook-official"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-twitter"></i>
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
         
-            <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
-                    <i class="fa fa-comment-o"></i>
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
-                <i class="fa fa-list"></i>
+                <i class="fa fa-list" aria-hidden="true"></i>
             </a>
         </li>
     </ul>
@@ -313,9 +632,10 @@
 
 
         
+        
             
                 <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
             
         
@@ -326,67 +646,101 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2016 Babis Karypidis. All Rights Reserved.
+        Copyrights &copy; 2024 Babis Karypidis. All Rights Reserved.
     </span>
 </footer>
 
             </div>
             
-                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
                     <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2014/12/02/My-participation-in-ItProDevConnections-2014/"  data-tooltip="My participation in ItProDevConnections 2014">
-                
-                    <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2014/12/02/My-participation-in-ItProDevConnections-2014/"
+                    data-tooltip="My participation in ItProDevConnections 2014"
+                    aria-label="PREVIOUS: My participation in ItProDevConnections 2014"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/" data-tooltip="Create a multitenant application with Entity Framework Code First - Part 2">
-                
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
-                    <i class="fa fa-angle-right"></i>
-                </a>
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2014/11/18/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-2/"
+                    data-tooltip="Create a multitenant application with Entity Framework Code First - Part 2"
+                    aria-label="NEXT: Create a multitenant application with Entity Framework Code First - Part 2"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
             </li>
         </ul>
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
-                <i class="fa fa-share-alt"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-google-plus"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-facebook-official"></i>
-            </a>
-        </li>
-        <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-twitter"></i>
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
         
-            <li class="post-action">
-                <a class="post-action-btn btn btn--default" href="#disqus_thread">
-                    <i class="fa fa-comment-o"></i>
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a
+                        class="post-action-btn btn btn--default"
+                        href="#disqus_thread"
+                        aria-label="Leave a comment"
+                    >
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
-                <i class="fa fa-list"></i>
+                <i class="fa fa-list" aria-hidden="true"></i>
             </a>
         </li>
     </ul>
@@ -394,26 +748,41 @@
 
 
                 </div>
-                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
-    <ul class="share-options">
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
-            </a>
-        </li>
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
-            </a>
-        </li>
-        <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/">
-                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
-            </a>
-        </li>
-    </ul>
-</div>
-<div id="share-options-mask" class="share-options-mask"></div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
             
         </div>
         
@@ -424,60 +793,65 @@
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
-            <i class="fa fa-remove"></i>
+            <i class="fa fa-times"></i>
         </div>
         
-            <img id="about-card-picture" src="http://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110"/>
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/7c9ee05396641133c8d505197fc17cc5?s=110" alt="Author&#39;s picture"/>
         
             <h4 id="about-card-name">Babis Karypidis</h4>
         
-            <h5 id="about-card-bio"><p>Hi, I am Babis Karypidis, a Greek software engineer who tries to fit other activities, except development, in his life.</p>
-</h5>
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
         
         
-            <h5 id="about-card-job">
+            <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>Freelance Software Engineer focusing on .NET, Azure and React.js</p>
+                <p>author.job</p>
 
-            </h5>
+            </div>
         
         
-            <h5 id="about-card-location">
-                <i class="fa fa-map-marker"></i>
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
                 <br/>
-                Brussels, Belgium
-            </h5>
+                Thessaloniki, Greece
+            </div>
         
     </div>
 </div>
 
         
-<div id="cover" style="background-image:url('https://globalazurereport.blob.core.windows.net/personalblog/web_development_top.jpg');"></div>
-    </body>
-    <!--SCRIPTS-->
-<script src="/assets/js/scrip-rjanlllosg30d03qrddpwrs6wqf4k3v0bbo68hiifuvthyhqfefx2htcagu0.min.js" type="text/javascript"></script>
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-9xh1uuvzj9epxjrwi1ftdf05eawvprhb9onoygse3kk2ycl8ua9fcrxverfe.min.js"></script>
+
 <!--SCRIPTS END-->
+
 
     
         <script>
-             var disqus_config = function () {
-                 this.page.url = 'http://xabikostest.github.io/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/';
-                 
-                    this.page.identifier = '2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/';
-                                  
-             };
-            (function() {
-                var d = document, s = d.createElement('script');
-                var disqus_shortname = 'xabikos';
-                s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          var disqus_config = function() {
+            this.page.url = 'https://xabikos.com/2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/';
+              
+            this.page.identifier = '2014/11/19/Create-a-multitenant-application-with-Entity-Framework-Code-First-Part-3/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'xabikos';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
 
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
-            })();
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
         </script>
     
 
 
 
+
+    </body>
 </html>
